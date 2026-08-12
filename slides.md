@@ -252,7 +252,7 @@ layout: default
 |---|---|---|
 | loop の所有者 | Next.js / AI SDK | AgentCore Runtime / Agent SDK |
 | エージェント差分 | TypeScript のレジストリ | Python の `AgentConfig` / options |
-| ツール | Local TS・MCP・Runtime tool・Skills | Built-in tools・Skills・MCP |
+| ツール | Local TS・MCP・Runtime・Skills（Sandbox追加可） | Built-in tools・Skills・MCP |
 | HITL | AI SDK tool approval + 共通 Route | `can_use_tool` + Runtime 側 queue |
 | UI ストリーム | AI SDK `UIMessage` | SDK event → UI chunk 変換 |
 | 会話継続 | DB の messages を再投入 | SDK session + S3 session store |
@@ -641,44 +641,51 @@ layout: default
 
 <div class="muji-eyebrow mb-2">適用判断</div>
 
-# ToolLoopAgent 方式は「共通基盤に乗る専門家」に向く
+# ToolLoopAgent の能力は、接続する tool で決まる
 
 <div class="grid grid-cols-[1fr_1fr] gap-10 mt-8">
 
 <div>
-  <div class="muji-label mb-3">適している場合</div>
+  <div class="muji-label mb-3">対象実装ですでに利用</div>
   <ul>
-    <li>1回のHTTPストリームで完結する対話が中心</li>
-    <li>既存MCPやローカルtoolを組み合わせたい</li>
-    <li>UI・保存・認可・観測を共通化したい</li>
-    <li>TypeScriptで差分を小さく保ちたい</li>
+    <li><code>getSkillTools()</code> でSkillsを列挙</li>
+    <li>選択済みSkillをpromptへ事前注入</li>
+    <li><code>skill</code> toolで指示本文を動的ロード</li>
+    <li>他のtoolsと統合してToolLoopAgentへ渡す</li>
   </ul>
 </div>
 
 <div>
-  <div class="muji-label mb-3">再検討する場合</div>
+  <div class="muji-label mb-3">実行toolを足せば利用可能</div>
   <ul>
-    <li>ローカルファイルやBashを主体に作業する</li>
-    <li>Skillsやsubagentを実行基盤の中で使いたい</li>
-    <li>長いセッションをRuntimeへ閉じ込めたい</li>
-    <li>独立したコンテナ依存・ライブラリが必要</li>
+    <li>Vercel Sandbox（iad1）でBash・Filesを実行</li>
+    <li>AgentCore Code Interpreterをtool化</li>
+    <li><code>bash-tool</code> でSkillsとSandboxを接続</li>
+    <li>必要な実行環境だけを外部へ委譲</li>
   </ul>
 </div>
 
 </div>
 
-<div class="muji-panel-kinari mt-8">
-  <div class="text-lg font-bold">専門性は prompt と tools へ。運用責任は共通 Route へ。</div>
+<div class="muji-panel-kinari mt-7">
+  <div class="text-lg font-bold">Code Mode 自体はBashではない。</div>
+  <div class="muji-small mt-1">QuickJS内で既存toolsを組み立てる層。BashにはSandboxや実行toolの接続が要る。</div>
 </div>
 
 <div class="muji-folio">17 / 32</div>
 
 <!--
-このスライドは対象実装の実行境界から導いた選定指針。
+ToolLoopAgentはtool loopを担うため、SkillsやBashの可否は接続したtoolと実行環境で決まる。対象実装ではSkillsがすでに共通Routeへ統合されている。Code Mode単体にはfilesystemやmodule loaderがない。
 
 [Sources]
-- https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/documents/%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E8%BF%BD%E5%8A%A0%E6%89%8B%E9%A0%86%E3%82%AC%E3%82%A4%E3%83%89.md
-- https://ai-sdk.dev/docs/agents/building-agents
+- https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/frontend/lib/skills/skillTool.ts
+- https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/frontend/app/api/chat/histories/%5BhistoryId%5D/agent/route.ts
+- https://github.com/mhigroup/A0005-AI-Workspace/discussions/3637
+- https://ai-sdk.dev/cookbook/guides/agent-skills
+- https://ai-sdk.dev/docs/reference/ai-sdk-core/sandbox
+- https://ai-sdk.dev/docs/ai-sdk-core/code-mode
+- https://vercel.com/changelog/use-skills-in-your-ai-sdk-agents-via-bash-tool
+- https://vercel.com/kb/guide/vercel-sandbox-vs-codesandbox
 -->
 
 ---
@@ -1012,22 +1019,22 @@ class: compact-matrix
 
 <div class="muji-eyebrow mb-2">判断基準</div>
 
-# 選ぶ基準は「必要な実行環境」と「共有したい責任」
+# 「組み込み」と「追加できる」を分けて比べる
 
 | 要件 | ToolLoopAgent Route | Claude Agent SDK Runtime |
 |---|:---:|:---:|
 | 既存UI・保存・認可へ最短で追加 | ◎ | △ |
 | TypeScriptだけで完結 | ◎ | — |
-| Local TS / MCP tool の合成 | ◎ | ○ |
-| Read / Edit / Bash の組み込み実行 | △ | ◎ |
-| Skills / subagents / hooks | △ | ◎ |
+| Local TS / MCP / Skills の合成 | ◎ | ○ |
+| Sandbox / Code Interpreter のtool接続 | ◎ | ○ |
+| Read / Edit / Bash の組み込み実行 | — | ◎ |
+| Claude Code互換のsubagents / hooks | — | ◎ |
 | 独自Python・OS依存の同梱 | △ | ◎ |
-| コンテナ・IAM・network運用を避けたい | ◎ | — |
 | Runtime session に作業状態を閉じたい | △ | ◎ |
 
 <div class="muji-callout mt-3">
-  <strong>迷ったら ToolLoopAgent から始める。</strong>
-  <span class="muji-small ml-2">実行環境そのものが要件になった時点で Runtime 方式へ。</span>
+  <strong>ToolLoopAgent は弱い方式ではない。</strong>
+  <span class="muji-small ml-2">実行環境をtoolとして足すか、agent hostへ同梱するかが違う。</span>
 </div>
 
 <div class="muji-folio">27 / 32</div>
@@ -1037,6 +1044,9 @@ class: compact-matrix
 
 [Sources]
 - https://ai-sdk.dev/docs/agents/building-agents
+- https://ai-sdk.dev/cookbook/guides/agent-skills
+- https://ai-sdk.dev/docs/reference/ai-sdk-core/sandbox
+- https://ai-sdk.dev/docs/ai-sdk-core/code-mode
 - https://code.claude.com/docs/en/agent-sdk/overview
 - https://code.claude.com/docs/en/agent-sdk/hosting
 - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html
@@ -1048,31 +1058,31 @@ layout: default
 
 <div class="muji-eyebrow mb-2">判断の順序</div>
 
-# 先に loop の置き場所を決める
+# 先に loop、次に実行環境の接続方法を決める
 
 <div class="grid grid-cols-3 gap-5 mt-7">
   <div class="muji-decision-card">
     <div class="muji-number">1</div>
-    <div class="muji-label mt-3">実行環境</div>
-    <div class="font-bold mt-2">Files · Bash · Skills が主役か</div>
-    <div class="muji-decision-result"><span>該当</span> Claude Agent SDK<br>AgentCore Runtime 上</div>
-  </div>
-  <div class="muji-decision-card">
-    <div class="muji-number">2</div>
-    <div class="muji-label mt-3">共有責任</div>
-    <div class="font-bold mt-2">既存UI・保存・認可を使うか</div>
+    <div class="muji-label mt-3">loopの所有者</div>
+    <div class="font-bold mt-2">既存UI・保存・認可を共有するか</div>
     <div class="muji-decision-result"><span>該当</span> ToolLoopAgent 共通Route</div>
   </div>
   <div class="muji-decision-card">
+    <div class="muji-number">2</div>
+    <div class="muji-label mt-3">組み込み実行環境</div>
+    <div class="font-bold mt-2">Claude Code互換が主役か</div>
+    <div class="muji-decision-result"><span>該当</span> Claude Agent SDK<br>AgentCore Runtime 上</div>
+  </div>
+  <div class="muji-decision-card">
     <div class="muji-number">3</div>
-    <div class="muji-label mt-3">ハイブリッド</div>
-    <div class="font-bold mt-2">専門処理だけを外へ出すか</div>
-    <div class="muji-decision-result"><span>該当</span> MCP toolとしてのRuntime</div>
+    <div class="muji-label mt-3">追加する実行環境</div>
+    <div class="font-bold mt-2">必要な能力だけ外へ出すか</div>
+    <div class="muji-decision-result"><span>該当</span> Sandbox・Code Interpreter<br>Runtime tool</div>
   </div>
 </div>
 
 <div class="muji-panel-kinari mt-5 text-center">
-  <strong>Runtime を使うかどうかは、最後に決まる。</strong>
+  <strong>Skillsはどちらでも使える。Bashは「組み込み」か「tool接続」かの違い。</strong>
 </div>
 
 <div class="muji-folio">28 / 32</div>
@@ -1083,6 +1093,9 @@ layout: default
 [Sources]
 - https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/documents/%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E8%BF%BD%E5%8A%A0%E6%89%8B%E9%A0%86%E3%82%AC%E3%82%A4%E3%83%89.md
 - https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/runtime/general-agent/README.md
+- https://github.com/mhigroup/A0005-AI-Workspace/discussions/3637
+- https://ai-sdk.dev/cookbook/guides/agent-skills
+- https://ai-sdk.dev/docs/reference/ai-sdk-core/sandbox
 -->
 
 ---
@@ -1196,9 +1209,9 @@ class: closing-slide
 # エージェントの作り方は<br>loop の置き場所から決める
 
 <div class="grid grid-cols-3 gap-6 mt-10 max-w-[58rem]">
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">1</div><div class="font-bold mt-2">共通基盤へ差分を足すなら ToolLoopAgent</div></div>
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">2</div><div class="font-bold mt-2">実行環境が能力なら Claude Agent SDK + Runtime</div></div>
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">3</div><div class="font-bold mt-2">Runtime は agent にも tool にもなれる</div></div>
+  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">1</div><div class="font-bold mt-2">ToolLoopAgentでもSkills・Sandbox Bashを使える</div></div>
+  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">2</div><div class="font-bold mt-2">Claude Code互換が主役なら Claude Agent SDK</div></div>
+  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">3</div><div class="font-bold mt-2">差は能力の有無でなく、責任の置き場所</div></div>
 </div>
 
 <div class="muji-meta mt-10">公開実装のアーキテクチャ調査</div>
@@ -1228,6 +1241,7 @@ layout: default
     <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/documents/%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E8%BF%BD%E5%8A%A0%E6%89%8B%E9%A0%86%E3%82%AC%E3%82%A4%E3%83%89.md">エージェント追加手順ガイド</a></li>
     <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/runtime/general-agent/README.md">General Agent Runtime 仕様</a></li>
     <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/.claude/rules/agent-capability-matrix.md">エージェント能力マトリクス</a></li>
+    <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/discussions/3637">コード実行基盤の調査</a></li>
   </ul>
 </div>
 
@@ -1235,6 +1249,9 @@ layout: default
   <div class="muji-label mb-2">公式ドキュメント</div>
   <ul class="muji-source-list">
     <li><a href="https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent">AI SDK · ToolLoopAgent</a></li>
+    <li><a href="https://ai-sdk.dev/cookbook/guides/agent-skills">AI SDK · Agent Skills</a></li>
+    <li><a href="https://ai-sdk.dev/docs/reference/ai-sdk-core/sandbox">AI SDK · Sandbox</a></li>
+    <li><a href="https://ai-sdk.dev/docs/ai-sdk-core/code-mode">AI SDK · Code Mode</a></li>
     <li><a href="https://code.claude.com/docs/en/agent-sdk/overview">Claude Agent SDK · Overview</a></li>
     <li><a href="https://code.claude.com/docs/en/agent-sdk/agent-loop">Claude Agent SDK · Agent loop</a></li>
     <li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html">Amazon Bedrock AgentCore Runtime</a></li>
@@ -1253,6 +1270,9 @@ layout: default
 [Sources]
 - https://github.com/mhigroup/A0005-AI-Workspace/tree/e33b41bea233d00e4c6b92da024e12cc412abcf5
 - https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent
+- https://ai-sdk.dev/cookbook/guides/agent-skills
+- https://ai-sdk.dev/docs/reference/ai-sdk-core/sandbox
+- https://ai-sdk.dev/docs/ai-sdk-core/code-mode
 - https://code.claude.com/docs/en/agent-sdk/overview
 - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html
 -->
