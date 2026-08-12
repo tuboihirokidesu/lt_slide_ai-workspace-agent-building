@@ -174,7 +174,7 @@ body,
   font-weight: 700;
   line-height: 1.35;
   text-align: left;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .slidev-layout table td {
