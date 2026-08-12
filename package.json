@@ -1,0 +1,21 @@
+{
+  "name": "lt-slide-ai-workspace-agent-building",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export",
+    "check:slides": "node scripts/check-slides.mjs"
+  },
+  "dependencies": {
+    "@slidev/cli": "52.15.2",
+    "@slidev/theme-default": "0.25.0",
+    "@slidev/types": "52.15.2",
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "playwright-chromium": "latest"
+  }
+}

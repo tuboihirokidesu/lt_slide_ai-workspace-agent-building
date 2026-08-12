@@ -1,0 +1,685 @@
+:root {
+  --muji-red: #7f0019;
+  --muji-danger: #dd0c14;
+  --muji-kinari: #f4eede;
+  --muji-beige: #e0ceaa;
+  --muji-text: #3c3c43;
+  --muji-text-secondary: #6d6d72;
+  --muji-text-tertiary: #76767b;
+  --muji-disabled: #9d9da0;
+  --muji-border: #d8d8d9;
+  --muji-border-light: #ebebec;
+  --muji-bg: #ffffff;
+  --muji-bg-secondary: #f5f5f5;
+  --muji-surface: #ffffff;
+  --slidev-theme-primary: var(--muji-red);
+}
+
+html,
+body,
+#app {
+  background: var(--muji-bg) !important;
+  color: var(--muji-text) !important;
+}
+
+.slidev-page,
+.slidev-layout {
+  background: var(--muji-bg);
+  color: var(--muji-text);
+  font-family: "Helvetica Neue", Arial, "Noto Sans JP", "Noto Sans JP Fallback",
+    "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  font-feature-settings: normal;
+  font-kerning: auto;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.slidev-layout {
+  padding: 3.4rem 4.5rem 3rem;
+}
+
+.slidev-layout::after {
+  content: "";
+  position: absolute;
+  left: 4.5rem;
+  right: 4.5rem;
+  bottom: 1.55rem;
+  height: 1px;
+  background: var(--muji-border-light);
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3,
+.slidev-layout h4,
+.slidev-layout h5,
+.slidev-layout h6 {
+  color: var(--muji-text);
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-wrap: wrap;
+}
+
+.slidev-layout h1 {
+  font-size: 2.45rem;
+  line-height: 1.28;
+  margin: 0 0 1.4rem;
+}
+
+.slidev-layout h2 {
+  font-size: 2rem;
+  line-height: 1.35;
+}
+
+.slidev-layout h3 {
+  font-size: 1.45rem;
+  line-height: 1.25;
+  letter-spacing: 0.12em;
+}
+
+.slidev-layout p,
+.slidev-layout li {
+  color: var(--muji-text);
+  font-family: inherit;
+  font-size: 1.03rem;
+  line-height: 1.6;
+}
+
+.slidev-layout strong {
+  font-weight: 700;
+}
+
+.slidev-layout.cover {
+  background: var(--muji-kinari) !important;
+  padding: 3.8rem 5rem 3.5rem;
+}
+
+.slidev-layout.cover::after,
+.slidev-layout.section::after,
+.slidev-layout.end::after {
+  display: none;
+}
+
+.slidev-layout.cover h1 {
+  max-width: 46rem;
+  font-size: 4.6rem;
+  line-height: 1.18;
+  margin: 0;
+}
+
+.slidev-layout.section {
+  background: var(--muji-kinari) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 5rem;
+}
+
+.slidev-layout.section h1 {
+  max-width: 48rem;
+  font-size: 4rem;
+  line-height: 1.22;
+  margin: 0;
+}
+
+.slidev-layout.end {
+  background: var(--muji-kinari) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 5rem;
+}
+
+.slidev-layout.end h1 {
+  font-size: 4.3rem;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.slidev-layout.closing-slide {
+  padding: 2.5rem 5rem 2.8rem;
+  background: var(--muji-kinari) !important;
+}
+
+.slidev-layout.closing-slide::after {
+  display: none;
+}
+
+.slidev-layout.closing-slide h1 {
+  margin: 1.2rem 0 0;
+  font-size: 3.85rem;
+  line-height: 1.16;
+  text-align: center;
+}
+
+.slidev-layout.closing-slide .grid .font-bold {
+  color: var(--muji-text) !important;
+}
+
+.slidev-layout table {
+  width: 100%;
+  margin: 0.8rem 0;
+  border-collapse: collapse;
+  border-top: 1px solid var(--muji-text);
+  border-bottom: 1px solid var(--muji-text);
+}
+
+.slidev-layout table th {
+  padding: 0.72rem 0.8rem;
+  border-bottom: 1px solid var(--muji-text);
+  color: var(--muji-text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.slidev-layout table td {
+  padding: 0.68rem 0.8rem;
+  border-bottom: 1px solid var(--muji-border-light);
+  color: var(--muji-text);
+  font-size: 0.88rem;
+  line-height: 1.48;
+  vertical-align: top;
+}
+
+.slidev-layout table tr:last-child td {
+  border-bottom: 0;
+}
+
+.slidev-layout pre,
+.slidev-layout pre.shiki,
+.slidev-layout .slidev-code,
+.slidev-layout div[class*="language-"] {
+  max-height: 30rem;
+  margin: 0.5rem 0 !important;
+  padding: 0.85rem 1rem !important;
+  overflow: auto;
+  border: 1px solid var(--muji-border) !important;
+  border-radius: 0 !important;
+  background: var(--muji-bg-secondary) !important;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace !important;
+  font-size: 0.78rem !important;
+  line-height: 1.48 !important;
+}
+
+.slidev-layout pre.shiki code,
+.slidev-layout pre.shiki span {
+  background: transparent !important;
+  font-family: inherit !important;
+}
+
+.slidev-layout .shiki .line.highlighted {
+  display: inline-block;
+  width: calc(100% + 1rem);
+  margin-left: -0.65rem;
+  padding-left: 0.55rem;
+  border-left: 3px solid var(--muji-red);
+  background: rgba(127, 0, 25, 0.06) !important;
+}
+
+.slidev-layout :not(pre) > code {
+  padding: 0.08em 0.34em;
+  border: 1px solid var(--muji-border-light);
+  border-radius: 0 !important;
+  background: var(--muji-bg-secondary);
+  color: var(--muji-text);
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.88em;
+}
+
+.slidev-layout a {
+  color: var(--muji-text) !important;
+  text-decoration: underline;
+  text-decoration-color: var(--muji-disabled);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.slidev-layout a:hover {
+  color: var(--muji-red) !important;
+  text-decoration-color: var(--muji-red);
+}
+
+.slidev-layout ul,
+.slidev-layout ol {
+  margin: 0.65rem 0;
+  padding-left: 1.3rem;
+}
+
+.slidev-layout li {
+  margin: 0.35rem 0;
+}
+
+.slidev-layout ul > li {
+  list-style: none;
+  position: relative;
+  padding-left: 0.95rem;
+}
+
+.slidev-layout ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.77em;
+  width: 4px;
+  height: 4px;
+  background: var(--muji-red);
+}
+
+.slidev-layout blockquote {
+  margin: 1.2rem 0;
+  padding: 1.1rem 1.25rem;
+  border: 0;
+  border-left: 4px solid var(--muji-red);
+  background: var(--muji-kinari);
+  color: var(--muji-text);
+}
+
+.slidev-layout blockquote p {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.slidev-layout hr {
+  height: 1px;
+  margin: 1.25rem 0;
+  border: 0;
+  background: var(--muji-border);
+}
+
+/* Mermaid: neutral and flat. */
+div.mermaid {
+  background: transparent !important;
+}
+
+div.mermaid svg {
+  background: transparent !important;
+}
+
+div.mermaid svg text,
+div.mermaid svg .nodeLabel,
+div.mermaid svg .edgeLabel,
+div.mermaid svg .messageText,
+div.mermaid svg [class*="text"] {
+  fill: var(--muji-text) !important;
+  color: var(--muji-text) !important;
+  font-family: "Helvetica Neue", Arial, "Noto Sans JP", sans-serif !important;
+  font-size: 14px !important;
+}
+
+div.mermaid svg [class*="node"] rect,
+div.mermaid svg [class*="node"] polygon,
+div.mermaid svg [class*="node"] circle,
+div.mermaid svg [class*="node"] ellipse,
+div.mermaid svg [class*="node"] path,
+div.mermaid svg .cluster rect,
+div.mermaid svg [class*="actor"]:not(text):not([class*="line"]) {
+  fill: var(--muji-bg) !important;
+  stroke: var(--muji-border) !important;
+  stroke-width: 1.4px !important;
+}
+
+div.mermaid svg path[class*="edge"],
+div.mermaid svg path[class*="flowchart-link"],
+div.mermaid svg [class*="actor-line"],
+div.mermaid svg line[class*="messageLine"] {
+  fill: none !important;
+  stroke: var(--muji-text-secondary) !important;
+  stroke-width: 1.4px !important;
+}
+
+div.mermaid svg marker path,
+div.mermaid svg defs marker path,
+div.mermaid svg [class*="arrowhead"] path {
+  fill: var(--muji-text-secondary) !important;
+  stroke: var(--muji-text-secondary) !important;
+}
+
+div.mermaid svg .edgeLabel rect,
+div.mermaid svg .edgeLabel foreignObject {
+  fill: var(--muji-bg) !important;
+  background: var(--muji-bg) !important;
+}
+
+div.mermaid svg .note,
+div.mermaid svg rect.note {
+  fill: var(--muji-kinari) !important;
+  stroke: var(--muji-beige) !important;
+}
+
+/* Deck-specific helpers. */
+.muji-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.6rem;
+  padding: 0.16rem 0.52rem;
+  background: var(--muji-red);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.muji-eyebrow {
+  color: var(--muji-red);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.muji-meta {
+  color: var(--muji-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.muji-lead {
+  max-width: 51rem;
+  color: var(--muji-text-secondary) !important;
+  font-size: 1.13rem !important;
+  line-height: 1.65 !important;
+}
+
+.muji-rule {
+  height: 1px;
+  background: var(--muji-border);
+}
+
+.muji-rule-strong {
+  height: 2px;
+  background: var(--muji-text);
+}
+
+.muji-red-rule {
+  width: 4.5rem;
+  height: 4px;
+  background: var(--muji-red);
+}
+
+.muji-panel {
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--muji-border-light);
+  background: var(--muji-surface);
+}
+
+.muji-panel-kinari {
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--muji-beige);
+  background: var(--muji-kinari);
+}
+
+.muji-dark-panel {
+  padding: 1.15rem 1.25rem;
+  background: var(--muji-text);
+  color: #fff;
+}
+
+.muji-dark-panel :is(div, p, li, strong, span, code) {
+  color: #fff !important;
+}
+
+.muji-dark-panel ul > li::before {
+  background: #fff;
+}
+
+.muji-number {
+  color: var(--muji-red);
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.muji-label {
+  color: var(--muji-text-secondary);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.muji-folio {
+  position: absolute;
+  right: 4.5rem;
+  bottom: 1.72rem;
+  z-index: 2;
+  color: var(--muji-text-secondary);
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+.muji-arch-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--muji-border);
+  background: var(--muji-bg-secondary);
+  font-size: 0.9rem;
+}
+
+.muji-arch-lane {
+  display: grid;
+  grid-template-columns: 2rem 1fr 1.5rem 1fr 1.5rem 1.35fr;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.muji-arch-lane-four {
+  grid-template-columns: 1fr 1.5rem 1fr 1.5rem 1fr 1.5rem 1fr;
+}
+
+.muji-arch-index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muji-red);
+  font-weight: 700;
+}
+
+.muji-arch-box {
+  display: flex;
+  min-height: 3.8rem;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--muji-border);
+  background: var(--muji-bg);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.muji-arch-box span {
+  color: var(--muji-text-secondary);
+  font-size: 0.72rem;
+}
+
+.muji-arch-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muji-red);
+  font-size: 1.15rem;
+}
+
+.muji-decision-card {
+  min-height: 14rem;
+  padding: 1.1rem 1.2rem;
+  border-top: 1px solid var(--muji-text);
+  background: var(--muji-bg);
+}
+
+.muji-decision-result {
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--muji-border-light);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.muji-decision-result span {
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--muji-red);
+  font-size: 0.68rem;
+}
+
+.muji-runtime-band {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--muji-text);
+  border-bottom: 1px solid var(--muji-border-light);
+}
+
+.muji-runtime-band > div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  padding: 0.55rem 0.75rem;
+  border-left: 1px solid var(--muji-border-light);
+  font-size: 0.82rem;
+}
+
+.muji-runtime-band > div:first-child {
+  border-left: 0;
+}
+
+.muji-runtime-band span {
+  color: var(--muji-red);
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+.slidev-layout.compact-matrix h1 {
+  margin-bottom: 0.7rem;
+  font-size: 2.2rem;
+}
+
+.slidev-layout.compact-matrix table {
+  margin: 0.35rem 0;
+}
+
+.slidev-layout.compact-matrix table th {
+  padding: 0.48rem 0.7rem;
+}
+
+.slidev-layout.compact-matrix table td {
+  padding: 0.43rem 0.7rem;
+  line-height: 1.35;
+}
+
+.muji-step {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.7rem;
+  padding: 0.68rem 0;
+  border-top: 1px solid var(--muji-border-light);
+}
+
+.muji-step:first-child {
+  border-top: 1px solid var(--muji-text);
+}
+
+.muji-step-index {
+  color: var(--muji-red);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.muji-step-title {
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.muji-step-text {
+  color: var(--muji-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.muji-token {
+  display: inline-block;
+  margin: 0.12rem 0.2rem 0.12rem 0;
+  padding: 0.16rem 0.48rem;
+  border: 1px solid var(--muji-border);
+  border-radius: 4px;
+  background: var(--muji-bg);
+  color: var(--muji-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.muji-callout {
+  padding-left: 1rem;
+  border-left: 4px solid var(--muji-red);
+}
+
+.muji-big-claim {
+  max-width: 50rem;
+  color: var(--muji-text);
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.muji-small {
+  color: var(--muji-text-secondary) !important;
+  font-size: 0.8rem !important;
+  line-height: 1.5 !important;
+}
+
+.muji-source-list {
+  margin-top: 0.4rem;
+  padding-left: 0 !important;
+}
+
+.muji-source-list li {
+  padding: 0.42rem 0 !important;
+  border-top: 1px solid var(--muji-border-light);
+  font-size: 0.72rem !important;
+  line-height: 1.42 !important;
+}
+
+.muji-source-list li::before {
+  display: none;
+}
+
+.text-xs {
+  font-size: 0.75rem !important;
+  line-height: 1.45 !important;
+}
+
+.text-sm {
+  font-size: 0.88rem !important;
+  line-height: 1.52 !important;
+}
+
+.text-base {
+  font-size: 1.02rem !important;
+  line-height: 1.58 !important;
+}
+
+.text-lg {
+  font-size: 1.18rem !important;
+  line-height: 1.5 !important;
+}
+
+.text-xl {
+  font-size: 1.38rem !important;
+  line-height: 1.42 !important;
+}
+
+.text-2xl {
+  font-size: 1.7rem !important;
+  line-height: 1.35 !important;
+}
