@@ -1,6 +1,6 @@
 # AIエージェントの作り方
 
-[A0005-AI-Workspace](https://github.com/mhigroup/A0005-AI-Workspace) の公開実装を題材に、AI SDK `ToolLoopAgent` と Claude Agent SDK の2つのエージェント構築方式を整理した Slidev 資料です。
+[調査対象の公開実装](https://github.com/mhigroup/A0005-AI-Workspace)を題材に、AI SDK `ToolLoopAgent` と Claude Agent SDK の2つのエージェント構築方式を整理した Slidev 資料です。
 
 ## Slides
 

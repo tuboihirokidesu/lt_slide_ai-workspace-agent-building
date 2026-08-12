@@ -2,7 +2,7 @@
 theme: default
 title: AIエージェントの作り方 — 2つの実装境界
 info: |
-  A0005-AI-Workspace の公開実装を題材に、AI SDK ToolLoopAgent と Claude Agent SDK の2方式を整理する技術解説。
+  公開実装を題材に、AI SDK ToolLoopAgent と Claude Agent SDK の2方式を整理する技術解説。
 transition: none
 mdc: true
 fonts:
@@ -20,28 +20,28 @@ layout: cover
 <div class="flex h-full flex-col justify-between">
 
 <div class="flex items-center justify-between">
-  <div class="muji-kicker">A0005 · Architecture Study</div>
+  <div class="muji-kicker">AIエージェント設計</div>
   <div class="muji-meta">2026 · 08 · TSUBOI HIROKI</div>
 </div>
 
 <div>
-  <div class="muji-eyebrow mb-4">How to build an AI agent</div>
+  <div class="muji-eyebrow mb-4">実装境界から考える</div>
   <h1>AIエージェントの<br>作り方</h1>
   <div class="muji-red-rule mt-7"></div>
   <p class="mt-6 text-xl max-w-[47rem]">
     ToolLoopAgent と Claude Agent SDK<br>
-    <span class="text-base text-[#6d6d72]">A0005-AI-Workspace に見る、2つの実装境界</span>
+    <span class="text-base text-[#6d6d72]">公開実装に見る、2つの実装境界</span>
   </p>
 </div>
 
 <div class="muji-meta">
-  Public repository · develop@e33b41b · 2026-08-07
+  公開リポジトリ · develop@e33b41b · 2026-08-07
 </div>
 
 </div>
 
 <!--
-この資料は公開リポジトリ A0005-AI-Workspace の設計を題材に、エージェントの「ループをどこに置くか」を説明する。
+この資料は公開リポジトリの設計を題材に、エージェントの「ループをどこに置くか」を説明する。
 
 [Sources]
 - https://github.com/mhigroup/A0005-AI-Workspace/tree/e33b41bea233d00e4c6b92da024e12cc412abcf5
@@ -51,9 +51,9 @@ layout: cover
 layout: default
 ---
 
-<div class="muji-eyebrow mb-3">Opening</div>
+<div class="muji-eyebrow mb-3">はじめに</div>
 
-# A0005 の答えは「2つのSDK」ではなく「2つの実行境界」
+# 設計の本質は「2つのSDK」ではなく「2つの実行境界」
 
 <div class="grid grid-cols-2 gap-10 mt-8">
 
@@ -96,14 +96,14 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-3">One important distinction</div>
+<div class="muji-eyebrow mb-3">重要な区別</div>
 
 # AgentCore Runtime を使う = その中に主役の agent がいる、とは限らない
 
 <div class="grid grid-cols-[0.92fr_1.08fr] gap-8 mt-6">
 
 <div class="muji-panel-kinari">
-  <div class="muji-label">Runtime as a tool</div>
+  <div class="muji-label">ツールとしてのRuntime</div>
   <div class="text-xl font-bold mt-3">ToolLoopAgent の配下</div>
   <p class="text-sm mt-3">
     AgentCore Runtime を MCP サーバーとして公開し、外側の ToolLoopAgent が <strong>1つの tool</strong> として呼ぶ。
@@ -113,7 +113,7 @@ layout: default
 </div>
 
 <div class="muji-panel">
-  <div class="muji-label">Runtime as the agent host</div>
+  <div class="muji-label">エージェント実行基盤としてのRuntime</div>
   <div class="text-xl font-bold mt-3">Claude Agent SDK が主役</div>
   <p class="text-sm mt-3">
     ブラウザが Runtime を直接 invoke。Runtime 内の SDK が agent loop、組み込みツール、Skills、MCP を所有する。
@@ -131,7 +131,7 @@ layout: default
 <div class="muji-folio">03 / 32</div>
 
 <!--
-AWS 公式も AgentCore Runtime を agent または tool のホストとして説明する。A0005 の langfuse-agent は Runtime を FastMCP サーバーとして公開し、外側の ToolLoopAgent から利用する。
+AWS 公式も AgentCore Runtime を agent または tool のホストとして説明する。対象実装の langfuse-agent は Runtime を FastMCP サーバーとして公開し、外側の ToolLoopAgent から利用する。
 
 [Sources]
 - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html
@@ -143,7 +143,7 @@ AWS 公式も AgentCore Runtime を agent または tool のホストとして�
 layout: section
 ---
 
-<div class="muji-kicker mb-6">01 · Architecture map</div>
+<div class="muji-kicker mb-6">01 · 全体構成</div>
 
 # まず、全体を<br>一本の地図にする
 
@@ -153,7 +153,7 @@ layout: section
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Architecture map</div>
+<div class="muji-eyebrow mb-2">全体構成</div>
 
 # UI は同じ。agent loop の置き場所が違う
 
@@ -192,7 +192,7 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Fastest way to identify the path</div>
+<div class="muji-eyebrow mb-2">実装経路の見分け方</div>
 
 # 最短の見分け方は、直叩きリストを見ること
 
@@ -218,7 +218,7 @@ export function isDirectInvokeAgent(agentId?: string) {
 
 <div>
   <div class="muji-panel-kinari">
-    <div class="muji-label">Rule</div>
+    <div class="muji-label">判断ルール</div>
     <div class="text-lg font-bold mt-2">リストにある2件だけが<br>Runtime 直叩き</div>
   </div>
   <div class="muji-step mt-5">
@@ -244,7 +244,7 @@ export function isDirectInvokeAgent(agentId?: string) {
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Boundary comparison</div>
+<div class="muji-eyebrow mb-2">実行境界の比較</div>
 
 # 2方式の差は、共通機能の置き場所に現れる
 
@@ -275,7 +275,7 @@ layout: default
 layout: section
 ---
 
-<div class="muji-kicker mb-6">02 · ToolLoopAgent path</div>
+<div class="muji-kicker mb-6">02 · ToolLoopAgent方式</div>
 
 # 共通 Route に<br>差分を宣言する
 
@@ -285,7 +285,7 @@ layout: section
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Method A</div>
+<div class="muji-eyebrow mb-2">方式1</div>
 
 # Next.js が agent loop を所有する
 
@@ -335,26 +335,26 @@ sequenceDiagram
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Data-driven definition</div>
+<div class="muji-eyebrow mb-2">宣言による定義</div>
 
 # エージェント定義は3層に分ける
 
 <div class="grid grid-cols-3 gap-5 mt-8">
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Identity</div>
+  <div class="muji-label">識別子</div>
   <div class="text-lg font-bold mt-2"><code>AGENT_IDS</code></div>
   <p class="muji-small mt-3">Zod enum。リクエストとクライアントが共有する正規ID。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Behavior</div>
+  <div class="muji-label">振る舞い</div>
   <div class="text-lg font-bold mt-2"><code>AGENT_REGISTRY</code></div>
   <p class="muji-small mt-3">prompt、Gateway、保存戦略、telemetry、tool の宣言。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Availability</div>
+  <div class="muji-label">公開設定</div>
   <div class="text-lg font-bold mt-2">DynamoDB seed</div>
   <p class="muji-small mt-3"><code>enabled</code> と <code>privilege</code> の source of truth。</p>
 </div>
@@ -382,7 +382,7 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Addition procedure</div>
+<div class="muji-eyebrow mb-2">追加手順</div>
 
 # 追加作業は「共通 Route を編集しない」順番で進める
 
@@ -420,7 +420,7 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Core code</div>
+<div class="muji-eyebrow mb-2">実装の中核</div>
 
 # ToolLoopAgent の設定が、実行契約になる
 
@@ -467,32 +467,32 @@ new ToolLoopAgent({
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Tool assembly</div>
+<div class="muji-eyebrow mb-2">ツールの集約</div>
 
 # 4つの入口を、1つの tool set に集約する
 
 <div class="grid grid-cols-4 gap-4 mt-8">
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">MCP</div>
+  <div class="muji-label">MCPツール</div>
   <div class="font-bold mt-2">Gateway tools</div>
   <p class="muji-small mt-2">RAG、DynamoDB、kintone など</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">Runtime</div>
+  <div class="muji-label">Runtimeツール</div>
   <div class="font-bold mt-2"><code>buildRuntimeTools</code></div>
   <p class="muji-small mt-2">Local TS または AgentCore Runtime</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">Skills</div>
+  <div class="muji-label">Skillsツール</div>
   <div class="font-bold mt-2">Skill tools</div>
   <p class="muji-small mt-2">事前選択・動的ロード</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">Feature</div>
+  <div class="muji-label">機能ツール</div>
   <div class="font-bold mt-2">Local feature tools</div>
   <p class="muji-small mt-2">画像生成・Web検索</p>
 </div>
@@ -521,21 +521,21 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Hybrid pattern</div>
+<div class="muji-eyebrow mb-2">ハイブリッド構成</div>
 
 # AgentCore Runtime を「agent tool」として挟むケース
 
 <div class="muji-arch-lane muji-arch-lane-four mt-6">
-  <div class="muji-arch-box"><span>Outer</span><br><strong>ToolLoopAgent</strong></div><div class="muji-arch-arrow">→</div>
-  <div class="muji-arch-box"><span>MCP boundary</span><br>AI SDK MCP client</div><div class="muji-arch-arrow">→</div>
+  <div class="muji-arch-box"><span>外側</span><br><strong>ToolLoopAgent</strong></div><div class="muji-arch-arrow">→</div>
+  <div class="muji-arch-box"><span>MCP境界</span><br>AI SDK MCP client</div><div class="muji-arch-arrow">→</div>
   <div class="muji-arch-box"><span>AgentCore Runtime</span><br><strong>FastMCP · invoke</strong></div><div class="muji-arch-arrow">→</div>
-  <div class="muji-arch-box"><span>Inner</span><br>Strands Agent · Langfuse tools</div>
+  <div class="muji-arch-box"><span>内側</span><br>Strands Agent · Langfuse tools</div>
 </div>
 
 <div class="grid grid-cols-3 gap-5 mt-6">
-  <div class="muji-panel"><div class="muji-label">Outer</div><div class="font-bold mt-2">会話とUIの責任</div><div class="muji-small mt-2">履歴、承認、ストリーム、保存</div></div>
-  <div class="muji-panel-kinari"><div class="muji-label">Boundary</div><div class="font-bold mt-2">MCP の <code>invoke</code></div><div class="muji-small mt-2">Runtime 全体が1つの tool に見える</div></div>
-  <div class="muji-panel"><div class="muji-label">Inner</div><div class="font-bold mt-2">専門分析の責任</div><div class="muji-small mt-2">専門 prompt と下流 tools の選択</div></div>
+  <div class="muji-panel"><div class="muji-label">外側</div><div class="font-bold mt-2">会話とUIの責任</div><div class="muji-small mt-2">履歴、承認、ストリーム、保存</div></div>
+  <div class="muji-panel-kinari"><div class="muji-label">境界</div><div class="font-bold mt-2">MCP の <code>invoke</code></div><div class="muji-small mt-2">Runtime 全体が1つの tool に見える</div></div>
+  <div class="muji-panel"><div class="muji-label">内側</div><div class="font-bold mt-2">専門分析の責任</div><div class="muji-small mt-2">専門 prompt と下流 tools の選択</div></div>
 </div>
 
 <div class="muji-callout mt-5">
@@ -557,14 +557,14 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Cross-cutting capabilities</div>
+<div class="muji-eyebrow mb-2">共通機能</div>
 
 # 共通 Route の価値は「agent loop 以外」にある
 
 <div class="grid grid-cols-2 gap-8 mt-6">
 
 <div>
-  <div class="muji-label mb-2">Automatic for every routed agent</div>
+  <div class="muji-label mb-2">共通Routeで自動適用</div>
   <div class="muji-step"><div class="muji-step-index">✓</div><div><div class="muji-step-title">認証・権限・rate limit</div></div></div>
   <div class="muji-step"><div class="muji-step-index">✓</div><div><div class="muji-step-title">チャット履歴・タイトル保存</div></div></div>
   <div class="muji-step"><div class="muji-step-index">✓</div><div><div class="muji-step-title">reasoning・prompt cache</div></div></div>
@@ -572,7 +572,7 @@ layout: default
 </div>
 
 <div>
-  <div class="muji-label mb-2">Enabled from the registry</div>
+  <div class="muji-label mb-2">レジストリから有効化</div>
   <div class="muji-step"><div class="muji-step-index">+</div><div><div class="muji-step-title">MCP Gateway / runtime tools</div></div></div>
   <div class="muji-step"><div class="muji-step-index">+</div><div><div class="muji-step-title">RAG references / response strategy</div></div></div>
   <div class="muji-step"><div class="muji-step-index">+</div><div><div class="muji-step-title">image generation / web search</div></div></div>
@@ -597,9 +597,9 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Connecting tools</div>
+<div class="muji-eyebrow mb-2">ツール接続</div>
 
-# Tool の接続は、既存資産から外側へ広げる
+# ツールの接続は、既存資産から外側へ広げる
 
 <div class="grid grid-cols-3 gap-6 mt-8">
 
@@ -639,14 +639,14 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Good fit</div>
+<div class="muji-eyebrow mb-2">適用判断</div>
 
 # ToolLoopAgent 方式は「共通基盤に乗る専門家」に向く
 
 <div class="grid grid-cols-[1fr_1fr] gap-10 mt-8">
 
 <div>
-  <div class="muji-label mb-3">Choose it when</div>
+  <div class="muji-label mb-3">適している場合</div>
   <ul>
     <li>1回のHTTPストリームで完結する対話が中心</li>
     <li>既存MCPやローカルtoolを組み合わせたい</li>
@@ -656,7 +656,7 @@ layout: default
 </div>
 
 <div>
-  <div class="muji-label mb-3">Reconsider when</div>
+  <div class="muji-label mb-3">再検討する場合</div>
   <ul>
     <li>ローカルファイルやBashを主体に作業する</li>
     <li>Skillsやsubagentを実行基盤の中で使いたい</li>
@@ -674,7 +674,7 @@ layout: default
 <div class="muji-folio">17 / 32</div>
 
 <!--
-このスライドは A0005 の実装境界から導いた選定指針。
+このスライドは対象実装の実行境界から導いた選定指針。
 
 [Sources]
 - https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/documents/%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E8%BF%BD%E5%8A%A0%E6%89%8B%E9%A0%86%E3%82%AC%E3%82%A4%E3%83%89.md
@@ -685,7 +685,7 @@ layout: default
 layout: section
 ---
 
-<div class="muji-kicker mb-6">03 · Claude Agent SDK path</div>
+<div class="muji-kicker mb-6">03 · Claude Agent SDK方式</div>
 
 # Runtime そのものを<br>エージェントにする
 
@@ -695,7 +695,7 @@ layout: section
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Method B</div>
+<div class="muji-eyebrow mb-2">方式2</div>
 
 # AgentCore Runtime が agent loop を所有する
 
@@ -718,9 +718,9 @@ sequenceDiagram
 ```
 
 <div class="muji-runtime-band mt-2">
-  <div><span>HOST</span><strong>AgentCore Runtime</strong></div>
-  <div><span>LOOP</span><strong>Claude Agent SDK</strong></div>
-  <div><span>MODEL ROUTE</span><strong>Amazon Bedrock</strong></div>
+  <div><span>実行基盤</span><strong>AgentCore Runtime</strong></div>
+  <div><span>ループ</span><strong>Claude Agent SDK</strong></div>
+  <div><span>モデル経路</span><strong>Amazon Bedrock</strong></div>
 </div>
 
 <div class="muji-folio">19 / 32</div>
@@ -736,7 +736,7 @@ sequenceDiagram
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Frontend boundary</div>
+<div class="muji-eyebrow mb-2">フロントエンド境界</div>
 
 # ブラウザは Next.js の agent Route を通らない
 
@@ -781,32 +781,32 @@ fetch(invokeUrl, {
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Runtime anatomy</div>
+<div class="muji-eyebrow mb-2">Runtimeの構成</div>
 
 # Runtime は4つの責務に分ける
 
 <div class="grid grid-cols-2 gap-x-8 gap-y-5 mt-7">
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">01 · Entry</div>
+  <div class="muji-label">01 · 入口</div>
   <div class="text-lg font-bold mt-2"><code>server_app.py</code></div>
   <p class="muji-small mt-2">BedrockAgentCoreApp、JWT、privilege、SSE entrypoint。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">02 · Agent-specific</div>
+  <div class="muji-label">02 · エージェント固有</div>
   <div class="text-lg font-bold mt-2"><code>agent.py</code></div>
   <p class="muji-small mt-2">model、system prompt、Skills、MCP、permission、session store。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">03 · Shared loop</div>
+  <div class="muji-label">03 · 共有ループ</div>
   <div class="text-lg font-bold mt-2"><code>runtime_app.py</code></div>
   <p class="muji-small mt-2"><code>ClaudeSDKClient</code>、query、event loop、memory、HITL queue。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-4">
-  <div class="muji-label">04 · Container</div>
+  <div class="muji-label">04 · コンテナ</div>
   <div class="text-lg font-bold mt-2"><code>Dockerfile + Terraform</code></div>
   <p class="muji-small mt-2">CLI binary、Python依存、IAM、ネットワーク、Runtime version。</p>
 </div>
@@ -831,26 +831,26 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">What the SDK brings</div>
+<div class="muji-eyebrow mb-2">SDKが提供するもの</div>
 
 # Claude Agent SDK は、Claude Code の実行能力をライブラリ化する
 
 <div class="grid grid-cols-3 gap-5 mt-7">
 
 <div class="muji-panel">
-  <div class="muji-label">Built-in tools</div>
+  <div class="muji-label">組み込みツール</div>
   <div class="font-bold mt-2">Read · Edit · Write<br>Glob · Grep · Bash</div>
   <p class="muji-small mt-3">ファイルとコマンドを同じ loop 内で扱う。</p>
 </div>
 
 <div class="muji-panel-kinari">
-  <div class="muji-label">Reusable behavior</div>
+  <div class="muji-label">再利用する振る舞い</div>
   <div class="font-bold mt-2">Skills · MCP<br>Subagents · Hooks</div>
   <p class="muji-small mt-3">能力とワークフローを実行環境に同梱する。</p>
 </div>
 
 <div class="muji-panel">
-  <div class="muji-label">Control</div>
+  <div class="muji-label">制御</div>
   <div class="font-bold mt-2">Permissions · Budget<br>Session · Streaming</div>
   <p class="muji-small mt-3">実行可否、上限、継続、進捗をアプリから制御する。</p>
 </div>
@@ -876,7 +876,7 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">What AgentCore adds</div>
+<div class="muji-eyebrow mb-2">AgentCoreが提供するもの</div>
 
 # AgentCore Runtime は、<br>agent loop に運用境界を与える
 
@@ -912,7 +912,7 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Addition procedure</div>
+<div class="muji-eyebrow mb-2">追加手順</div>
 
 # 直叩き agent の追加は、アプリ追加<br>ではなく Runtime 追加に近い
 
@@ -940,7 +940,7 @@ layout: default
 <div class="muji-folio">24 / 32</div>
 
 <!--
-A0005 には ToolLoopAgent 系のような単一追加ガイドはなく、general-agent の README と共有 runtime 実装が実質的な参照実装になっている。このスライドはその構造を外部向け手順に再構成したもの。
+対象リポジトリには ToolLoopAgent 系のような単一追加ガイドはなく、general-agent の README と共有 runtime 実装が実質的な参照実装になっている。このスライドはその構造を外部向け手順に再構成したもの。
 
 [Sources]
 - https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/runtime/general-agent/README.md
@@ -952,26 +952,26 @@ A0005 には ToolLoopAgent 系のような単一追加ガイドはなく、gener
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">State, continuity, durability</div>
+<div class="muji-eyebrow mb-2">状態・継続・耐久性</div>
 
 # 「session を復元できる」と「処理を再開できる」は違う
 
 <div class="grid grid-cols-3 gap-5 mt-7">
 
 <div class="muji-panel">
-  <div class="muji-label">Conversation</div>
+  <div class="muji-label">会話</div>
   <div class="text-lg font-bold mt-2">S3 session store</div>
   <p class="muji-small mt-3">SDK transcript を外部保存し、別 host から同じ session を resume。</p>
 </div>
 
 <div class="muji-panel-kinari">
-  <div class="muji-label">Application view</div>
+  <div class="muji-label">画面表示</div>
   <div class="text-lg font-bold mt-2">DB checkpoints</div>
   <p class="muji-small mt-3">画面に見せた途中回答・HITLカード・最終回答を別経路で保存。</p>
 </div>
 
 <div class="muji-panel">
-  <div class="muji-label">In-flight execution</div>
+  <div class="muji-label">実行中の状態</div>
   <div class="text-lg font-bold mt-2">Memory queue</div>
   <p class="muji-small mt-3">承認待ち queue や実行中 tool は、プロセス停止でそのまま戻らない。</p>
 </div>
@@ -985,7 +985,7 @@ layout: default
 <div class="muji-folio">25 / 32</div>
 
 <!--
-Claude Agent SDK は sessionStore adapter で transcript を外部保存し stateless host から resume できる。A0005 は S3SessionStore を使う。一方、A0005 の HITL は Runtime プロセス内 queue で待つため、queue 自体は外部永続化されない。
+Claude Agent SDK は sessionStore adapter で transcript を外部保存し stateless host から resume できる。対象実装は S3SessionStore を使う。一方、HITL は Runtime プロセス内 queue で待つため、queue 自体は外部永続化されない。
 
 [Sources]
 - https://code.claude.com/docs/en/agent-sdk/session-storage
@@ -999,7 +999,7 @@ Claude Agent SDK は sessionStore adapter で transcript を外部保存し stat
 layout: section
 ---
 
-<div class="muji-kicker mb-6">04 · Choose deliberately</div>
+<div class="muji-kicker mb-6">04 · 選択基準</div>
 
 # 2方式は競合ではなく<br>役割分担である
 
@@ -1010,7 +1010,7 @@ layout: default
 class: compact-matrix
 ---
 
-<div class="muji-eyebrow mb-2">Decision matrix</div>
+<div class="muji-eyebrow mb-2">判断基準</div>
 
 # 選ぶ基準は「必要な実行環境」と「共有したい責任」
 
@@ -1033,7 +1033,7 @@ class: compact-matrix
 <div class="muji-folio">27 / 32</div>
 
 <!--
-この比較は A0005 の実装と、両SDK・AgentCoreの公式ドキュメントを合わせた設計上の整理。
+この比較は対象実装と、両SDK・AgentCoreの公式ドキュメントを合わせた設計上の整理。
 
 [Sources]
 - https://ai-sdk.dev/docs/agents/building-agents
@@ -1046,28 +1046,28 @@ class: compact-matrix
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Decision flow</div>
+<div class="muji-eyebrow mb-2">判断の順序</div>
 
 # 先に loop の置き場所を決める
 
 <div class="grid grid-cols-3 gap-5 mt-7">
   <div class="muji-decision-card">
     <div class="muji-number">1</div>
-    <div class="muji-label mt-3">Execution</div>
+    <div class="muji-label mt-3">実行環境</div>
     <div class="font-bold mt-2">Files · Bash · Skills が主役か</div>
-    <div class="muji-decision-result"><span>YES</span> Claude Agent SDK<br>on AgentCore Runtime</div>
+    <div class="muji-decision-result"><span>該当</span> Claude Agent SDK<br>AgentCore Runtime 上</div>
   </div>
   <div class="muji-decision-card">
     <div class="muji-number">2</div>
-    <div class="muji-label mt-3">Shared responsibility</div>
+    <div class="muji-label mt-3">共有責任</div>
     <div class="font-bold mt-2">既存UI・保存・認可を使うか</div>
-    <div class="muji-decision-result"><span>YES</span> ToolLoopAgent Route</div>
+    <div class="muji-decision-result"><span>該当</span> ToolLoopAgent 共通Route</div>
   </div>
   <div class="muji-decision-card">
     <div class="muji-number">3</div>
-    <div class="muji-label mt-3">Hybrid</div>
+    <div class="muji-label mt-3">ハイブリッド</div>
     <div class="font-bold mt-2">専門処理だけを外へ出すか</div>
-    <div class="muji-decision-result"><span>YES</span> Runtime as MCP tool</div>
+    <div class="muji-decision-result"><span>該当</span> MCP toolとしてのRuntime</div>
   </div>
 </div>
 
@@ -1089,44 +1089,44 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Shared design principles</div>
+<div class="muji-eyebrow mb-2">共通の設計原則</div>
 
 # 方式が違っても、守る原則は同じ
 
 <div class="grid grid-cols-3 gap-6 mt-8">
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Identity</div>
+  <div class="muji-label">認証・認可</div>
   <div class="text-lg font-bold mt-2">誰の権限で動くか</div>
   <p class="muji-small mt-2">ユーザーJWT、Runtime role、下流サービスの認可を混ぜない。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Tool surface</div>
+  <div class="muji-label">ツール境界</div>
   <div class="text-lg font-bold mt-2">見せるtoolを最小化</div>
   <p class="muji-small mt-2">命名、schema、read-only hint、allow / deny を設計する。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Human control</div>
+  <div class="muji-label">人による制御</div>
   <div class="text-lg font-bold mt-2">副作用前に承認する</div>
   <p class="muji-small mt-2">HITL を UI 表示ではなく実行契約として扱う。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">State</div>
+  <div class="muji-label">状態</div>
   <div class="text-lg font-bold mt-2">何を復元できるか</div>
   <p class="muji-small mt-2">会話、tool result、承認、成果物、in-flight step を分ける。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Failure</div>
+  <div class="muji-label">失敗</div>
   <div class="text-lg font-bold mt-2">再試行を冪等にする</div>
   <p class="muji-small mt-2">外部副作用は request ID と実行台帳で守る。</p>
 </div>
 
 <div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">Observability</div>
+  <div class="muji-label">可観測性</div>
   <div class="text-lg font-bold mt-2">loop 全体を追う</div>
   <p class="muji-small mt-2">model、tool、approval、session、usage を同じtraceへ。</p>
 </div>
@@ -1147,14 +1147,14 @@ layout: default
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Release review</div>
+<div class="muji-eyebrow mb-2">リリース確認</div>
 
 # 「チャットできた」で完成にしない
 
 <div class="grid grid-cols-2 gap-10 mt-6">
 
 <div>
-  <div class="muji-label mb-2">Behavior</div>
+  <div class="muji-label mb-2">振る舞い</div>
   <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">役割と非対応範囲を明記</div></div></div>
   <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">tool schema と命名を検証</div></div></div>
   <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">停止条件・予算・timeoutを設定</div></div></div>
@@ -1162,7 +1162,7 @@ layout: default
 </div>
 
 <div>
-  <div class="muji-label mb-2">Operations</div>
+  <div class="muji-label mb-2">運用</div>
   <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">権限不足・下流障害を確認</div></div></div>
   <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">再送・重複・中断を確認</div></div></div>
   <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">trace とusageを追跡</div></div></div>
@@ -1172,13 +1172,13 @@ layout: default
 </div>
 
 <div class="muji-panel-kinari mt-6">
-  <div class="text-lg font-bold">Definition of Done = 表示 + 会話 + tool + 安全な失敗</div>
+  <div class="text-lg font-bold">完了条件 = 表示 + 会話 + ツール + 安全な失敗</div>
 </div>
 
 <div class="muji-folio">30 / 32</div>
 
 <!--
-A0005 の追加ガイドの DoD は「メニュー表示・チャット・tool call」。外部運用向けには、失敗時の安全性と観測も完了条件へ加えるべきだという提案。
+対象の追加ガイドの DoD は「メニュー表示・チャット・tool call」。外部運用向けには、失敗時の安全性と観測も完了条件へ加えるべきだという提案。
 
 [Sources]
 - https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/documents/%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E8%BF%BD%E5%8A%A0%E6%89%8B%E9%A0%86%E3%82%AC%E3%82%A4%E3%83%89.md
@@ -1191,7 +1191,7 @@ layout: default
 class: closing-slide
 ---
 
-<div class="muji-kicker mb-7">Takeaways</div>
+<div class="muji-kicker mb-7">まとめ</div>
 
 # エージェントの作り方は<br>loop の置き場所から決める
 
@@ -1201,7 +1201,7 @@ class: closing-slide
   <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">3</div><div class="font-bold mt-2">Runtime は agent にも tool にもなれる</div></div>
 </div>
 
-<div class="muji-meta mt-10">A0005-AI-Workspace · Public architecture study</div>
+<div class="muji-meta mt-10">公開実装のアーキテクチャ調査</div>
 
 <!--
 [Sources]
@@ -1215,24 +1215,24 @@ class: closing-slide
 layout: default
 ---
 
-<div class="muji-eyebrow mb-2">Bibliography</div>
+<div class="muji-eyebrow mb-2">参考資料</div>
 
-# Sources
+# 参考資料
 
 <div class="grid grid-cols-2 gap-10 mt-5">
 
 <div>
-  <div class="muji-label mb-2">Case study</div>
+  <div class="muji-label mb-2">調査対象</div>
   <ul class="muji-source-list">
-    <li><a href="https://github.com/mhigroup/A0005-AI-Workspace">mhigroup/A0005-AI-Workspace</a></li>
+    <li><a href="https://github.com/mhigroup/A0005-AI-Workspace">調査対象リポジトリ</a></li>
     <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/documents/%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E8%BF%BD%E5%8A%A0%E6%89%8B%E9%A0%86%E3%82%AC%E3%82%A4%E3%83%89.md">エージェント追加手順ガイド</a></li>
-    <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/runtime/general-agent/README.md">General Agent Runtime README</a></li>
-    <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/.claude/rules/agent-capability-matrix.md">Agent capability matrix</a></li>
+    <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/runtime/general-agent/README.md">General Agent Runtime 仕様</a></li>
+    <li><a href="https://github.com/mhigroup/A0005-AI-Workspace/blob/e33b41bea233d00e4c6b92da024e12cc412abcf5/.claude/rules/agent-capability-matrix.md">エージェント能力マトリクス</a></li>
   </ul>
 </div>
 
 <div>
-  <div class="muji-label mb-2">Official documentation</div>
+  <div class="muji-label mb-2">公式ドキュメント</div>
   <ul class="muji-source-list">
     <li><a href="https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent">AI SDK · ToolLoopAgent</a></li>
     <li><a href="https://code.claude.com/docs/en/agent-sdk/overview">Claude Agent SDK · Overview</a></li>
@@ -1244,7 +1244,7 @@ layout: default
 </div>
 
 <div class="muji-panel-kinari mt-7">
-  <div class="muji-small">Repository snapshot: <code>develop@e33b41bea233d00e4c6b92da024e12cc412abcf5</code> · 2026-08-07</div>
+  <div class="muji-small">調査時点: <code>develop@e33b41bea233d00e4c6b92da024e12cc412abcf5</code> · 2026-08-07</div>
 </div>
 
 <div class="muji-folio">32 / 32</div>
