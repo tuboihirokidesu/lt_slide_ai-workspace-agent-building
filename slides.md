@@ -39,8 +39,8 @@ layout: cover
 </div>
 
 <!--
-外部の開発者が、エージェントの構成要素と作り方、2方式の違いと選択基準を理解するための資料。
-構成方針: 冒頭にループの実況 → 定義 → 作り方A（実物のレジストリエントリ）→ 作り方B → 選び方 → 参照実装の現在地（免責はここに集約）。詳細は付録。
+外部の開発者が、エージェントの構成要素と作り方、2方式の違いと選択基準を理解するための資料。発表時間30分・全17枚（約1.75分/枚）。
+構成方針: 冒頭にループの実況 → 定義 → 作り方A（実物のレジストリエントリ）→ 作り方B → 選び方 → 参照実装の現在地（免責はここに集約）。
 
 [Sources]
 - 参照実装リポジトリ 対象commit: develop@e33b41bea233d00e4c6b92da024e12cc412abcf5（2026-08-07）。以降のノートで repo: と書いたパスはこのcommitを指す
@@ -113,7 +113,7 @@ layout: default
 <div class="muji-callout mt-8"><strong>固定手順で目的を満たせるなら、まずワークフロー。</strong><span class="muji-small ml-2">違いはAPIの能力ではなく、制御を書く場所。toolsもHITL（toolApproval）も generateText / streamText で使える。</span></div>
 
 <!--
-定義は1枚に圧縮。「制御を置く場所」の議論は口頭で補足し、詳細は付録の比較へ。
+定義は1枚に圧縮。「制御を置く場所」の議論は口頭で補足。
 想定質問「ツールやHITLはエージェント専用か」への答え: いいえ。tools / stopWhen / toolApproval は generateText・streamText 両方のオプションに実在（ai@7.0.19 型定義で確認）。ToolLoopAgentはそれらを束ねた包みで、能力の追加ではない。参照実装の通常チャットも streamText + isStepCount(1) を使っている（ループを閉じた使い方）。
 
 [Sources]
@@ -192,27 +192,11 @@ layout: default
 -->
 
 ---
-layout: section
----
-
-<div class="muji-kicker mb-6">作り方 A</div>
-
-# Webアプリの中に<br>エージェントを追加する
-
-<p class="muji-lead mt-7">AI SDK ToolLoopAgentを使う。共通Routeへ「宣言」を足す — ループは書かない。</p>
-
-<!--
-[Sources]
-- repo:frontend/app/api/chat/histories/[historyId]/agent/route.ts
-- https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent
--->
-
----
 layout: default
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">作り方Aの全体像</div>
+  <div class="muji-eyebrow">作り方A · 全体像</div>
   <div><span class="muji-token">観点: 役割</span></div>
 </div>
 
@@ -254,7 +238,7 @@ layout: default
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">手順の中心 · レジストリエントリ</div>
+  <div class="muji-eyebrow">作り方A · レジストリエントリ</div>
   <div><span class="muji-token">観点: 指示・知識・ツール</span></div>
 </div>
 
@@ -282,7 +266,7 @@ layout: default
 
 <div>
   <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">buildSystemPromptParts</div><div class="muji-small">指示。static / dynamic 分離 — static はキャッシュされるため変動値禁止</div></div>
-  <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">gateways / buildRuntimeTools</div><div class="muji-small">ツール。MCP接続とローカルTS toolの注入点</div></div>
+  <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">gateways / buildRuntimeTools</div><div class="muji-small">ツール。接続は3パターン — ローカルTS注入 / 既存MCP Gateway / 新規Gateway。Gatewayの実体はAgentCore Gateway: 自作LambdaのMCPツール化で、接続実装とIAMはLambda側</div></div>
   <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">safeToolPatterns</div><div class="muji-small">承認を免除するtool名。既定は破壊的キーワードで自動判定</div></div>
   <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">telemetryAgentName</div><div class="muji-small">観測。Langfuseタグの元になる</div></div>
 </div>
@@ -292,52 +276,12 @@ layout: default
 <div class="muji-callout mt-4"><strong>宣言を1個書けば、専門エージェントが1体増える。</strong><span class="muji-small ml-2">最小の実例: kr-dashboard-agent（単一gateway・フォーム系）。</span></div>
 
 <!--
-「作れそう」を作る中心スライド。これはガイドのチュートリアル（sample-agent）に掲載されている実エントリで、創作ではない。
-
-[Sources]
-- repo:documents/エージェント追加手順ガイド.md（3.3 Step 3のエントリ本体をそのまま掲載。AgentConfig全フィールド表も同節）
-- repo:frontend/app/api/chat/histories/[historyId]/agent/agentRegistry.ts
--->
-
----
-layout: default
----
-
-<div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">手順 · ツール接続</div>
-  <div><span class="muji-token">観点: 知識・ツール</span></div>
-</div>
-
-# ツール接続は3パターン、手順はSkillsで足す
-
-<div class="grid grid-cols-4 gap-5 mt-8">
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-label">パターン1</div><div class="font-bold mt-2">ローカルTSツール</div><p class="muji-small mt-2">軽い計算や変換。buildRuntimeToolsで注入</p></div>
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-label">パターン2</div><div class="font-bold mt-2">既存MCP Gateway</div><p class="muji-small mt-2">RAG・業務システムに相乗りする</p></div>
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-label">パターン3</div><div class="font-bold mt-2">新規MCP Gateway</div><p class="muji-small mt-2">新しい外部能力を定義して接続する</p></div>
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-label">スキル</div><div class="font-bold mt-2">手順の読み込み</div><p class="muji-small mt-2">専門手順をskillツールで必要時に読む</p></div>
-</div>
-
-<div class="muji-small mt-3">MCP Gatewayの実体はAgentCore Gateway — 自作LambdaやAPIをtool schema付きでMCPツール化して配る。資源への接続実装とIAMはLambda側が持つ。</div>
-
-<div class="mt-6 px-6 py-5 bg-[#f4eede] border border-[#e0ceaa]">
-  <div class="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center text-center gap-5">
-    <div><strong>選ぶ</strong><br><span class="muji-small">必要な能力だけ</span></div>
-    <div class="text-[#7f0019] text-2xl">→</div>
-    <div><strong>包む</strong><br><span class="muji-small">承認・表示・計測</span></div>
-    <div class="text-[#7f0019] text-2xl">→</div>
-    <div><strong>渡す</strong><br><span class="muji-small">ToolLoopAgentへ</span></div>
-  </div>
-</div>
-
-<blockquote class="mt-8"><p>新しい能力を作る前に、既存のtoolとSkillを探す。</p></blockquote>
-
-<!--
+「作れそう」を作る中心スライド。これはガイドのチュートリアル（sample-agent）に掲載されている実エントリで、創作ではない。最小の実例は kr-dashboard-agent（単一gateway・フォーム系）。新しい能力を作る前に、既存のtoolとSkillを探すのが原則。
 想定質問「AgentCoreがS3やDynamoのツールを提供する？」への答え: 提供するのはGatewayによる「ツール化と配布」。既製コネクタではなく、実装（boto3等）とIAMは自作Lambda側。AgentCore自身の組み込みツールはCode InterpreterとBrowserの2つのみ。Runtimeはツール提供者ではなく実行環境。
 
 [Sources]
-- repo:documents/エージェント追加手順ガイド.md（4. ツール接続の3パターン）
-- repo:frontend/app/api/chat/histories/[historyId]/agent/_utils/tools.ts（mergeTools）
-- repo:frontend/lib/skills/skillTool.ts（skillツール = 手順の必要時読み込み）
+- repo:documents/エージェント追加手順ガイド.md（3.3 Step 3のエントリ本体をそのまま掲載。4章にツール接続の3パターン）
+- repo:frontend/app/api/chat/histories/[historyId]/agent/agentRegistry.ts
 - repo:terraform/modules/agentcore/aiws_dynamodb_gateway/main.tf（aws_bedrockagentcore_gateway + Lambda target + tool_schema）
 -->
 
@@ -346,7 +290,7 @@ layout: default
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">共通Routeの内側</div>
+  <div class="muji-eyebrow">作り方A · 共通Routeの内側</div>
   <div><span class="muji-token">観点: ループ・安全と運用</span></div>
 </div>
 
@@ -397,7 +341,7 @@ layout: default
 class: compact-matrix
 ---
 
-<div class="muji-eyebrow mb-3">観点の記入例</div>
+<div class="muji-eyebrow mb-3">作り方A · 観点の記入例</div>
 
 # 冒頭の実況は、この宣言から生まれる
 
@@ -413,7 +357,7 @@ class: compact-matrix
 <div class="muji-callout mt-5"><strong>6観点が言葉になっていれば、方式（A/B）は後から替えられる。</strong></div>
 
 <!--
-スライド4の伏線回収。冒頭の模式トレース（再検索が1回入る）は、この表の宣言だけで成立する — 手順は書いていない。
+6観点の伏線回収。冒頭の模式トレース（再検索が1回入る）は、この表の宣言だけで成立する — 手順は書いていない。
 
 [Sources]
 - repo:frontend/app/api/chat/histories/[historyId]/agent/agentRegistry.ts（rag-agent）
@@ -421,27 +365,11 @@ class: compact-matrix
 -->
 
 ---
-layout: section
----
-
-<div class="muji-kicker mb-6">作り方 B</div>
-
-# 専用の実行基盤に<br>エージェントを構築する
-
-<p class="muji-lead mt-7">Claude Agent SDKと作業環境を、ひとつの公開単位にまとめる。</p>
-
-<!--
-[Sources]
-- repo:runtime/general-agent/agent.py
-- https://code.claude.com/docs/en/agent-sdk/hosting
--->
-
----
 layout: default
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">作り方Bの全体像</div>
+  <div class="muji-eyebrow">作り方B · 全体像</div>
   <div><span class="muji-token">観点: 役割</span></div>
 </div>
 
@@ -476,13 +404,14 @@ runtime/
 </div>
 
 <!--
-ツリーは実構成（旧版に無かった server.py = Dockerfile の ENTRYPOINT と、認可の中核 auth.py を追加）。
+Claude Agent SDKと作業環境を、ひとつの公開単位にまとめる方式。ツリーは実構成（server.py = Dockerfile の ENTRYPOINT、認可の中核 auth.py を含む）。
 「2体目」= mi-agent。同じ shared/chat 基盤＋独自Skills＋PostToolUse Hookで稼働中。
 
 [Sources]
 - repo:runtime/general-agent/README.md
 - repo:runtime/shared/chat/（server_app.py / runtime_app.py / auth.py / hitl.py / session_store.py）
 - repo:runtime/general-agent/Dockerfile（ENTRYPOINT ["python", "server.py"]）
+- https://code.claude.com/docs/en/agent-sdk/hosting
 -->
 
 ---
@@ -490,7 +419,7 @@ layout: default
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">手順 · 設定</div>
+  <div class="muji-eyebrow">作り方B · 設定</div>
   <div><span class="muji-token">観点: 指示・知識・ツール</span></div>
 </div>
 
@@ -540,7 +469,7 @@ layout: default
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">手順 · 能力と接続</div>
+  <div class="muji-eyebrow">作り方B · 能力と接続</div>
   <div><span class="muji-token">観点: ツール・ループ</span></div>
 </div>
 
@@ -590,7 +519,7 @@ layout: default
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">手順 · 公開と運用</div>
+  <div class="muji-eyebrow">作り方B · 公開と運用</div>
   <div><span class="muji-token">観点: 安全と運用</span></div>
 </div>
 
@@ -606,6 +535,8 @@ layout: default
 <div class="muji-panel-kinari mt-7"><strong>新しいエージェントは、新しい実行サービスに近い。</strong><span class="muji-small ml-2">コードだけでなく、依存・権限・ネットワーク・状態も一緒に設計する。</span></div>
 
 <!--
+Runtimeはツール提供者ではなく実行環境（箱）。Gatewayはツール化と配布。中のコードは実行roleのIAMでAWS資源を直接叩くため、隔離と認可を別々に設計する。
+
 [Sources]
 - repo:runtime/general-agent/Dockerfile（python:3.12-slim digest固定 / claude-code CLI固定 / DISABLE_AUTOUPDATER=1）
 - repo:runtime/general-agent/requirements.txt（claude-agent-sdk==固定、他はrange）
@@ -696,7 +627,7 @@ layout: default
 <div class="muji-callout mt-8"><strong>免責はこの1枚に集約した。コピーする前に、この3列を読む。</strong></div>
 
 <!--
-旧版で各スライドに散っていた「未接続」「未実装」をここに集約。安全上とくに重要なのは session所有者照合（auth.py の docstring が「session_id は信頼境界ではない」「他人の chatHistoryId」リスクを明記）と reconnect（transport.ts の reconnectToStream は未対応と明記）。
+各スライドに散らしがちな「未接続」「未実装」をここに集約。安全上とくに重要なのは session所有者照合（auth.py の docstring が「session_id は信頼境界ではない」「他人の chatHistoryId」リスクを明記）と reconnect（transport.ts の reconnectToStream は未対応と明記）。
 
 [Sources]
 - repo:runtime/shared/chat/auth.py（session IDの信頼境界に関する自認コメント）
@@ -769,281 +700,4 @@ layout: default
 [Sources]
 - 参照実装リポジトリ 対象commit: develop@e33b41bea233d00e4c6b92da024e12cc412abcf5
 - 上記スライド記載の公式ドキュメント各URL
--->
-
----
-layout: section
----
-
-<div class="muji-kicker mb-6">付録</div>
-
-# 詳細リファレンス
-
-<p class="muji-lead mt-7">発表では話さない密度をここに置く。比較表、境界の整理、適合場面、チェックリスト。</p>
-
-<!--
-LT本編は前のスライドまで。以降は配布資料として読む前提。
--->
-
----
-layout: default
-class: compact-matrix
----
-
-<div class="muji-eyebrow mb-3">付録 · 2方式の比較</div>
-
-# 責任の置き場所を、7観点で比べる
-
-| 観点 | ToolLoopAgent方式 | Claude Agent SDK方式 |
-|---|---|---|
-| ループを持つ場所 | Webアプリの共通Route | 専用の実行基盤 |
-| Skills | 読み込みツールで利用 | SDKのSkills機能で利用 |
-| Bash・ファイル | 実行toolを別途接続<br>参照実装は未接続 | 組み込みツールとして利用 |
-| UI・保存・承認 | 共通Routeを再利用 | custom transportと保存を配線 |
-| 状態 | messages＋外部store<br>作業fileは別設計 | S3 transcript<br>作業fileは別設計 |
-| 公開単位 | Webアプリ | 実行基盤＋Web接続 |
-| 得意な仕事 | 共通Routeに統合する専門対話 | stream接続内のstatefulな作業 |
-
-<div class="muji-callout mt-5"><strong>左は「能力を接続」、右は「能力を同梱」。耐久性は別の設計軸。</strong></div>
-
-<!--
-[Sources]
-- https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent
-- https://ai-sdk.dev/cookbook/guides/agent-skills
-- https://code.claude.com/docs/en/agent-sdk/overview
-- repo:runtime/shared/chat/session_store.py
--->
-
----
-layout: default
----
-
-<div class="muji-eyebrow mb-3">付録 · 誤解しやすい境界</div>
-
-# スキル・ツール・隔離・認可は、別々の概念
-
-<div class="grid grid-cols-3 gap-7 mt-9">
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">スキル</div>
-  <div class="text-lg font-bold mt-3">手順と補助資源</div>
-  <p class="muji-small mt-3">SKILL.mdを中心に、references・assets・任意のscriptsを必要時に使う。</p>
-</div>
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">ツール</div>
-  <div class="text-lg font-bold mt-3">操作の入口</div>
-  <p class="muji-small mt-3">検索、更新、ファイル操作、コード実行を型付きで公開する。</p>
-</div>
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">隔離と認可</div>
-  <div class="text-lg font-bold mt-3">別々の安全境界</div>
-  <p class="muji-small mt-3">microVMはセッション間を隔離する。AWS資源への操作可否はIAMで別に狭める。</p>
-</div>
-
-</div>
-
-<div class="muji-callout mt-9">
-  <strong>PermissionはSandboxではない。SandboxもAWS資源への認可を代替しない。</strong>
-  <div class="muji-small mt-1">AgentCoreの分担も同様に別々 — Gatewayは自作Lambda / APIをMCPツール化して配り、Runtimeはエージェントを動かす箱。Runtime内のコードは実行roleのIAMでAWS資源を直接叩く。</div>
-</div>
-
-<!--
-[Sources]
-- https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-security-best-practices.html
-- repo:frontend/lib/skills/skillTool.ts
--->
-
----
-layout: default
----
-
-<div class="muji-eyebrow mb-3">付録 · Bashの委譲先</div>
-
-# コード実行は、実行先へ明示的に委譲する
-
-<div class="grid grid-cols-3 gap-7 mt-8">
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-number">1</div>
-  <div class="text-xl font-bold mt-3">ローカルツール</div>
-  <p class="muji-small mt-3">小さく決定的な処理。ホスト上で動くため、Sandboxではない。</p>
-</div>
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-number">2</div>
-  <div class="text-xl font-bold mt-3">Vercel Sandbox</div>
-  <p class="muji-small mt-3">Firecracker microVMへ委譲。既定の外向き通信は開いているためpolicyで狭める。</p>
-</div>
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-number">3</div>
-  <div class="text-xl font-bold mt-3">Code Interpreter</div>
-  <p class="muji-small mt-3">コード実行をtool APIとして接続。session・IAM・時間上限を別に設計する。</p>
-</div>
-
-</div>
-
-<div class="muji-callout mt-9">
-  <strong>AI SDKのexperimental_sandboxは委譲契約であり、隔離実装そのものではない。</strong>
-  <div class="muji-small mt-1">参照実装のA方式では、いずれも未接続（現在地スライド参照）。</div>
-</div>
-
-<!--
-[Sources]
-- https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling#experimental-sandbox
-- https://vercel.com/docs/sandbox
-- https://vercel.com/changelog/advanced-egress-firewall-filtering-for-vercel-sandbox
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/code-interpreter-tool.html
--->
-
----
-layout: default
----
-
-<div class="muji-eyebrow mb-3">付録 · 作り方Aが向く場面</div>
-
-# 既存プロダクトへ、専門的な役割を増やしたいとき
-
-<div class="grid grid-cols-2 gap-10 mt-8">
-
-<div>
-  <div class="muji-label mb-3">向いている</div>
-  <ul>
-    <li>既存のチャットUIをそのまま使いたい</li>
-    <li>認可・保存・承認・観測を共通化したい</li>
-    <li>MCPやTypeScript toolsを組み合わせたい</li>
-    <li>短いHTTPストリームで仕事が完結する</li>
-  </ul>
-</div>
-
-<div>
-  <div class="muji-label mb-3">設計上の注意</div>
-  <ul>
-    <li>ファイルやBashには実行toolが別途必要</li>
-    <li>長い作業状態は外部ストアへ保存する</li>
-    <li>toolが増えるほど権限境界を明示する</li>
-    <li>Webアプリの実行時間と負荷を管理する</li>
-  </ul>
-</div>
-
-</div>
-
-<div class="muji-panel-kinari mt-8"><strong>「できるか」ではなく、「共通基盤に乗せる価値があるか」で選ぶ。</strong></div>
-
-<!--
-[Sources]
-- https://ai-sdk.dev/docs/agents/building-agents
-- repo:documents/エージェント追加手順ガイド.md
--->
-
----
-layout: default
----
-
-<div class="muji-eyebrow mb-3">付録 · 作り方Bが向く場面</div>
-
-# 作業環境そのものが、エージェントの価値になるとき
-
-<div class="grid grid-cols-2 gap-10 mt-8">
-
-<div>
-  <div class="muji-label mb-3">向いている</div>
-  <ul>
-    <li>複数ファイルを読み書きしながら進める</li>
-    <li>Bashやライブラリを繰り返し使う</li>
-    <li>Skills・組み込みtools・sessionを一体で使う</li>
-    <li>stream接続の上限（60分）内のstatefulな作業を専用基盤へ閉じたい</li>
-  </ul>
-</div>
-
-<div>
-  <div class="muji-label mb-3">設計上の注意</div>
-  <ul>
-    <li>コンテナとSDK依存を更新し続ける</li>
-    <li>Webアプリとは別に認可と監視を揃える</li>
-    <li>イベントをUI形式へ変換する</li>
-    <li>60分超・切断復帰にはasync・checkpoint・reconnectを足す</li>
-  </ul>
-</div>
-
-</div>
-
-<div class="muji-panel-kinari mt-8"><strong>「専用の作業場を持つ価値があるか」で選ぶ。</strong></div>
-
-<!--
-[Sources]
-- https://code.claude.com/docs/en/agent-sdk/hosting
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/bedrock-agentcore-limits.html
-- repo:frontend/lib/general-agent/transport.ts
--->
-
----
-layout: default
----
-
-<div class="muji-eyebrow mb-3">付録 · 要件から選ぶ例</div>
-
-# 仕事の形で、方式の選択は変わる
-
-<div class="grid grid-cols-3 gap-7 mt-8">
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">例1</div>
-  <div class="text-xl font-bold mt-3">社内文書の検索</div>
-  <p class="muji-small mt-3">RAG toolを呼び、回答と出典を既存UIへ返す。</p>
-  <div class="muji-token mt-4">ToolLoopAgent</div>
-</div>
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">例2</div>
-  <div class="text-xl font-bold mt-3">Excelの編集</div>
-  <p class="muji-small mt-3">処理単位なら実行tool。継続workspaceならOffice依存を備えた専用基盤。</p>
-  <div class="muji-token mt-4">要件次第</div>
-</div>
-
-<div class="border-t border-[#3c3c43] pt-5">
-  <div class="muji-label">例3</div>
-  <div class="text-xl font-bold mt-3">複数ファイルの調査・修正</div>
-  <p class="muji-small mt-3">Read・Grep・Edit・Bashを使い、stream内でstatefulに反復する。</p>
-  <div class="muji-token mt-4">Claude Agent SDK</div>
-</div>
-
-</div>
-
-<div class="muji-callout mt-8"><strong>例2を専用基盤で行うにはOffice依存の追加が要る。</strong><span class="muji-small ml-2">60分を超えるならasync化する（現在地スライド参照）。</span></div>
-
-<!--
-[Sources]
-- repo:documents/エージェント追加手順ガイド.md
-- repo:runtime/general-agent/README.md
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/bedrock-agentcore-limits.html
--->
-
----
-layout: default
----
-
-<div class="muji-eyebrow mb-3">付録 · 公開前の確認</div>
-
-# 仕事を、安全に完了できるかを見る
-
-<div class="grid grid-cols-2 gap-x-10 gap-y-4 mt-7">
-  <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">役割と非対応範囲</div><div class="muji-step-text">何を任せ、何を断るかが明確か。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">tool schema</div><div class="muji-step-text">入力が狭く、命名がモデルに伝わるか。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">承認・所有者・権限</div><div class="muji-step-text">副作用前で止まり、session・成果物・AWS権限を照合するか。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">停止と予算</div><div class="muji-step-text">SDK機能の列挙でなく、実装にstep・時間・費用上限があるか。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">再送と中断</div><div class="muji-step-text">冪等性、reconnect、checkpoint、async復帰を確認したか。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">□</div><div><div class="muji-step-title">観測と評価</div><div class="muji-step-text">tool、失敗、usage、成果を追跡できるか。</div></div></div>
-</div>
-
-<div class="muji-panel-kinari mt-7"><strong>完了条件 = 回答 + tool実行 + 安全な失敗 + 再現可能な運用</strong></div>
-
-<!--
-[Sources]
-- repo:.claude/rules/agent-capability-matrix.md
-- https://code.claude.com/docs/en/agent-sdk/secure-deployment
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-security-best-practices.html
 -->
