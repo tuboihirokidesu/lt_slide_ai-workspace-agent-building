@@ -110,10 +110,11 @@ layout: default
 
 </div>
 
-<div class="muji-callout mt-8"><strong>固定手順で目的を満たせるなら、まずワークフロー。</strong><span class="muji-small ml-2">違いはAPIの能力ではなく、制御を書く場所。エージェント化自体を目的にしない。</span></div>
+<div class="muji-callout mt-8"><strong>固定手順で目的を満たせるなら、まずワークフロー。</strong><span class="muji-small ml-2">違いはAPIの能力ではなく、制御を書く場所。toolsもHITL（toolApproval）も generateText / streamText で使える。</span></div>
 
 <!--
-定義は1枚に圧縮。「制御を置く場所」の議論（generateText/streamTextでも手動loopは組める）は口頭で補足し、詳細は付録の比較へ。
+定義は1枚に圧縮。「制御を置く場所」の議論は口頭で補足し、詳細は付録の比較へ。
+想定質問「ツールやHITLはエージェント専用か」への答え: いいえ。tools / stopWhen / toolApproval は generateText・streamText 両方のオプションに実在（ai@7.0.19 型定義で確認）。ToolLoopAgentはそれらを束ねた包みで、能力の追加ではない。参照実装の通常チャットも streamText + isStepCount(1) を使っている（ループを閉じた使い方）。
 
 [Sources]
 - https://ai-sdk.dev/docs/agents/overview
@@ -316,7 +317,9 @@ layout: default
   <div class="border-t border-[#3c3c43] pt-4"><div class="muji-label">スキル</div><div class="font-bold mt-2">手順の読み込み</div><p class="muji-small mt-2">専門手順をskillツールで必要時に読む</p></div>
 </div>
 
-<div class="mt-9 px-6 py-5 bg-[#f4eede] border border-[#e0ceaa]">
+<div class="muji-small mt-3">MCP Gatewayの実体はAgentCore Gateway — 自作LambdaやAPIをtool schema付きでMCPツール化して配る。資源への接続実装とIAMはLambda側が持つ。</div>
+
+<div class="mt-6 px-6 py-5 bg-[#f4eede] border border-[#e0ceaa]">
   <div class="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center text-center gap-5">
     <div><strong>選ぶ</strong><br><span class="muji-small">必要な能力だけ</span></div>
     <div class="text-[#7f0019] text-2xl">→</div>
@@ -329,10 +332,13 @@ layout: default
 <blockquote class="mt-8"><p>新しい能力を作る前に、既存のtoolとSkillを探す。</p></blockquote>
 
 <!--
+想定質問「AgentCoreがS3やDynamoのツールを提供する？」への答え: 提供するのはGatewayによる「ツール化と配布」。既製コネクタではなく、実装（boto3等）とIAMは自作Lambda側。AgentCore自身の組み込みツールはCode InterpreterとBrowserの2つのみ。Runtimeはツール提供者ではなく実行環境。
+
 [Sources]
 - repo:documents/エージェント追加手順ガイド.md（4. ツール接続の3パターン）
 - repo:frontend/app/api/chat/histories/[historyId]/agent/_utils/tools.ts（mergeTools）
 - repo:frontend/lib/skills/skillTool.ts（skillツール = 手順の必要時読み込み）
+- repo:terraform/modules/agentcore/aiws_dynamodb_gateway/main.tf（aws_bedrockagentcore_gateway + Lambda target + tool_schema）
 -->
 
 ---
@@ -840,6 +846,7 @@ layout: default
 
 <div class="muji-callout mt-9">
   <strong>PermissionはSandboxではない。SandboxもAWS資源への認可を代替しない。</strong>
+  <div class="muji-small mt-1">AgentCoreの分担も同様に別々 — Gatewayは自作Lambda / APIをMCPツール化して配り、Runtimeはエージェントを動かす箱。Runtime内のコードは実行roleのIAMでAWS資源を直接叩く。</div>
 </div>
 
 <!--
