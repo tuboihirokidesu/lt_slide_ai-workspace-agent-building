@@ -223,12 +223,13 @@ body,
 
 .slidev-layout :not(pre) > code {
   padding: 0.08em 0.34em;
-  border: 1px solid var(--muji-border-light);
+  border: 1px solid var(--muji-beige);
   border-radius: 0 !important;
-  background: var(--muji-bg-secondary);
-  color: var(--muji-text);
+  background: var(--muji-kinari) !important;
+  color: var(--muji-red) !important;
   font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
   font-size: 0.88em;
+  font-weight: 600 !important;
 }
 
 .slidev-layout a {
