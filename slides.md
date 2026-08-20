@@ -34,8 +34,6 @@ layout: cover
   </p>
 </div>
 
-<div class="muji-meta">社内AIワークスペースを題材にした実装解説</div>
-
 </div>
 
 <!--
