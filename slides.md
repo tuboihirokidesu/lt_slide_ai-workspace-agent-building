@@ -48,23 +48,16 @@ layout: cover
 
 ---
 layout: default
+class: diagram-slide diagram-crop
 ---
 
 <div class="muji-eyebrow mb-3">まず、動く瞬間を見る</div>
 
 # エージェントは、結果を見て「もう一手」を選び直す
 
-<div class="muji-arch-entry mt-4"><strong>質問</strong><span>「国内出張の宿泊費上限はいくら？ 最新の改訂も知りたい」</span></div>
-
-<div class="mt-5">
-  <div class="muji-step"><div class="muji-step-index">1</div><div><div class="muji-step-title">モデルの判断「規程の実文が要る」 → <code>rag_retrieve("出張旅費 宿泊費 上限")</code></div><div class="muji-step-text">結果: 上限額の条文は取れた。ただし改訂日の情報が含まれていない。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">↺ 2</div><div><div class="muji-step-title">結果を見て再判断「改訂履歴が足りない」 → クエリを変えて <code>rag_retrieve("出張旅費規程 改訂履歴")</code></div><div class="muji-step-text">結果: 改訂の通達を取得。2手目は誰も指示していない — モデルが1手目の結果から選んだ。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">3</div><div><div class="muji-step-title">「十分」と判断 → ループを止め、出典付きで回答</div><div class="muji-step-text">上限額と改訂日を、根拠文書つきで返す。回答と出典は会話に保存される。</div></div></div>
+<div class="muji-diagram-frame">
+  <img src="./images/agentic-rag-loop.png" alt="根拠が不足したときにquery、source、toolを変更して検索へ戻るAgentic RAGの循環図">
 </div>
-
-<div class="muji-callout mt-6"><strong>手順は書いていない。書いたのは役割・tools・上限・承認だけ。</strong><span class="muji-small ml-2">この「結果を見て選び直す」ループがエージェント。</span></div>
-
-<div class="muji-small mt-3">社内文書検索エージェントの動作の模式トレース。この宣言の実物は作り方Aで見る。</div>
 
 <!--
 掴みの1枚。ワークフローとの違いを言葉で説明する前に、ループが2周回る様子を見せる。
@@ -154,35 +147,16 @@ layout: default
 
 ---
 layout: default
+class: diagram-slide
 ---
 
 <div class="muji-eyebrow mb-3">参照実装に見る2方式</div>
 
 # 同じチャット画面でも、送信後の経路が違う
 
-<div class="muji-arch-entry mt-5"><strong>チャット画面</strong><span>→</span><code>selectedAgent</code></div>
-
-<div class="grid grid-cols-[auto_1fr] gap-x-7 gap-y-5 items-center mt-5">
-  <div class="muji-arch-index">A</div>
-  <div class="grid grid-cols-[1fr_auto_1fr_auto_1.15fr] items-stretch gap-3">
-    <div class="muji-arch-box">Next.js 共通Route</div><div class="muji-arch-arrow">→</div>
-    <div class="muji-arch-box"><strong>ToolLoopAgent</strong></div><div class="muji-arch-arrow">→</div>
-    <div class="muji-arch-box">MCP・Skills・業務tools</div>
-  </div>
-  <div class="muji-arch-index">B</div>
-  <div class="grid grid-cols-[1fr_auto_1fr_auto_1.15fr] items-stretch gap-3">
-    <div class="muji-arch-box">実行基盤を直接呼び出す</div><div class="muji-arch-arrow">→</div>
-    <div class="muji-arch-box">AgentCore Runtime</div><div class="muji-arch-arrow">→</div>
-    <div class="muji-arch-box"><strong>Claude Agent SDK</strong></div>
-  </div>
+<div class="muji-diagram-frame">
+  <img src="./images/architecture-responsibility-boundaries.png" alt="同じチャット画面から、Webアプリ中心と実行環境中心の2方式へ分岐する責任境界図">
 </div>
-
-<div class="grid grid-cols-2 gap-8 mt-7">
-  <div class="muji-callout"><strong>A:</strong> Webアプリがエージェントを組み立てる。共通Routeへ宣言を足す。</div>
-  <div class="muji-callout"><strong>B:</strong> 専用の実行基盤がエージェントを内包する。実行環境ごと同梱する。</div>
-</div>
-
-<div class="mt-6 text-[#6d6d72]">どちらも同じagent loop。違いは、ループと作業環境をどこに置くか。</div>
 
 <!--
 [Sources]
@@ -516,6 +490,7 @@ layout: default
 
 ---
 layout: default
+class: diagram-slide
 ---
 
 <div class="flex items-center justify-between mb-3">
@@ -525,14 +500,9 @@ layout: default
 
 # ひとつの実行サービスとして公開する
 
-<div class="grid grid-cols-2 gap-x-10 gap-y-4 mt-7">
-  <div class="muji-step"><div class="muji-step-index">01</div><div><div class="muji-step-title">依存を固定</div><div class="muji-step-text">base imageはdigest固定、CLIとSDKは動作確認済みペアで固定。他はrange指定 — lockは自分で足す。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">02</div><div><div class="muji-step-title">権限を最小化</div><div class="muji-step-text">microVM隔離はAWS認可を代替しない。IAM・S3・egressを必要範囲へ閉じる。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">03</div><div><div class="muji-step-title">状態を外部化</div><div class="muji-step-text">会話transcriptはS3、成果物はS3+期限付きURL、作業ファイルは/tmp。それぞれ別に設計する。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">04</div><div><div class="muji-step-title">観測して段階公開</div><div class="muji-step-text">model・tool・sessionを同じtraceで追い、privilegeで対象を絞って公開を始める。</div></div></div>
+<div class="muji-diagram-frame">
+  <img src="./images/skill-tool-sandbox-iam-layers.png" alt="Skill、Tool、Sandbox、IAMが互いに代替しない4つの設計レイヤーであることを示す図">
 </div>
-
-<div class="muji-panel-kinari mt-7"><strong>新しいエージェントは、新しい実行サービスに近い。</strong><span class="muji-small ml-2">コードだけでなく、依存・権限・ネットワーク・状態も一緒に設計する。</span></div>
 
 <!--
 Runtimeはツール提供者ではなく実行環境（箱）。Gatewayはツール化と配布。中のコードは実行roleのIAMでAWS資源を直接叩くため、隔離と認可を別々に設計する。
@@ -547,34 +517,14 @@ Runtimeはツール提供者ではなく実行環境（箱）。Gatewayはツー
 
 ---
 layout: default
+class: diagram-image-only
 ---
 
 <div class="muji-eyebrow mb-3">判断の順序</div>
 
-# 3つの質問に、上から答える
-
-<div class="grid grid-cols-3 gap-6 mt-8">
-  <div class="muji-decision-card">
-    <div class="muji-number">1</div>
-    <div class="muji-label mt-3">共通Route</div>
-    <div class="font-bold mt-2">認可・保存・承認を<br>そのまま再利用できるか</div>
-    <div class="muji-decision-result"><span>はい</span> ToolLoopAgent方式</div>
-  </div>
-  <div class="muji-decision-card">
-    <div class="muji-number">2</div>
-    <div class="muji-label mt-3">作業環境</div>
-    <div class="font-bold mt-2">ファイルとBashを<br>loopと一体で使うか</div>
-    <div class="muji-decision-result"><span>はい</span> Claude Agent SDK方式</div>
-  </div>
-  <div class="muji-decision-card">
-    <div class="muji-number">3</div>
-    <div class="muji-label mt-3">耐久性</div>
-    <div class="font-bold mt-2">stream接続の上限（60分）超・<br>切断復帰が必要か</div>
-    <div class="muji-decision-result"><span>はい</span> WorkflowAgent / async</div>
-  </div>
+<div class="muji-diagram-frame">
+  <img src="./images/agent-implementation-decision-tree.png" alt="共通Route、作業環境、耐久性の3つの質問を上からたどる方式選択の決定木">
 </div>
-
-<div class="muji-panel-kinari mt-7 text-center"><strong>どちらのループも、自動ではdurableにならない。</strong><span class="muji-small ml-2">AgentCoreの上限: 同期15分 / stream接続60分 / async 8時間。</span></div>
 
 <!--
 60分は「ストリーミング接続」の上限（セッション寿命は別枠で最大8時間）。長時間・中断耐性は AI SDK 7 の WorkflowAgent か AgentCore の async 化で別に設計する。
