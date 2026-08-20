@@ -167,6 +167,7 @@ class: diagram-slide
 
 ---
 layout: default
+class: agent-addition-slide
 ---
 
 <div class="flex items-center justify-between mb-3">
@@ -174,36 +175,65 @@ layout: default
   <div><span class="muji-token">観点: 役割</span></div>
 </div>
 
-# 作業は3ファイルの差分と、シード1件
+# 専門エージェントは「定義」して「公開」する
 
-<div class="grid grid-cols-[1.05fr_0.95fr] gap-10 mt-6">
+<div class="agent-addition-map">
 
-<div>
-  <div class="muji-step"><div class="muji-step-index">01</div><div><div class="muji-step-title">IDに1行足す</div><div class="muji-step-text">schemas/api/agents.ts の AGENT_IDS。足した瞬間、レジストリ側が型エラーになる。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">02</div><div><div class="muji-step-title">プロンプト生成関数</div><div class="muji-step-text">lib/llm/promptTemplate.ts。static / dynamic を分けて返す。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">03</div><div><div class="muji-step-title">レジストリにエントリ</div><div class="muji-step-text">agentRegistry.ts に宣言1個。次のスライドが実物。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">04</div><div><div class="muji-step-title">シードで公開</div><div class="muji-step-text">表示名・enabled・privilege は DynamoDB が正。Terraformシードに1件。</div></div></div>
-  <div class="muji-step"><div class="muji-step-index">05-07</div><div><div class="muji-step-title">テスト追随 → 画面確認 → 能力マトリクス更新</div><div class="muji-step-text">ガイドはこの7 Stepを手順化している。</div></div></div>
+<div class="agent-addition-lane">
+  <div class="agent-addition-head"><strong>実装する</strong><span>3ファイル</span></div>
+  <div class="agent-code-grid">
+    <div class="agent-code-card">
+      <div class="agent-code-label">01 · ID <span>agents.ts</span></div>
+      <pre class="agent-mini-code"><code>const AGENT_IDS = [
+  …,
+  "sample-agent",
+] as const;</code></pre>
+      <div class="agent-code-meaning">リクエスト型に追加</div>
+    </div>
+    <div class="agent-code-card">
+      <div class="agent-code-label">02 · 指示 <span>promptTemplate.ts</span></div>
+      <pre class="agent-mini-code"><code>const rules = `
+sample_echo ツールで
+入力をそのまま復唱`;</code></pre>
+      <div class="agent-code-meaning">役割と判断規則を書く</div>
+    </div>
+    <div class="agent-code-card">
+      <div class="agent-code-label">03 · 接続 <span>agentRegistry.ts</span></div>
+      <pre class="agent-mini-code"><code>buildSystemPromptParts: …,
+buildRuntimeTools: …,
+tools: { sample_echo: … }</code></pre>
+      <div class="agent-code-meaning">指示とツールを束ねる</div>
+    </div>
+  </div>
+  <div class="agent-flow-arrow"><span>↓</span> 3つの定義を読み込む</div>
+  <div class="agent-common-route"><strong>共通 route.ts</strong><span>変更しない</span><small>ループ · HITL · ストリーミング · 履歴保存</small></div>
+  <div class="agent-flow-result"><span>結果</span><strong>チャット応答 ＋ sample_echo を実行</strong></div>
 </div>
 
-<div>
-  <div class="muji-label mb-3">書かないもの</div>
-  <ul>
-    <li>ループ（stopWhen・再判断）</li>
-    <li>ストリーミングとUI変換</li>
-    <li>認証・認可、履歴保存</li>
-    <li>承認UI、観測</li>
-  </ul>
-  <div class="muji-panel-kinari mt-5"><strong>約2,500行の共通Routeは完全データ駆動。</strong><br><span class="muji-small">エージェントを追加してもRouteは変更しない — これがこの方式の売り。</span></div>
+<div class="agent-addition-lane agent-publish-lane">
+  <div class="agent-addition-head"><strong>公開する</strong><span>seed 1件</span></div>
+  <div class="agent-code-card agent-seed-card">
+    <div class="agent-code-label">04 · 表示と権限 <span>variables.tf</span></div>
+    <pre class="agent-mini-code"><code>{
+  id        = "sample-agent"
+  enabled   = true
+  privilege = "user"
+}</code></pre>
+    <div class="agent-code-meaning">表示するか・誰が使えるかを決める</div>
+  </div>
+  <div class="agent-flow-arrow"><span>↓</span> /api/agents が取得</div>
+  <div class="agent-menu-result"><strong>画面のメニューに表示</strong><small>利用者の privilege もここで判定</small></div>
 </div>
 
 </div>
+
+<div class="agent-done-row"><span>完成条件</span><strong>メニューに出る</strong><i>→</i><strong>選んで話せる</strong><i>→</i><strong>ツールが動く</strong><small>Step 5–7: check / test → 画面確認 → 能力マトリクス更新</small></div>
 
 <!--
-旧版は「④ループ」を手順に含めていたが、実ガイドにループの手順は存在しない（ループは共通Routeの持ち物）。手順は実ガイドの7 Stepに合わせた。
+実ガイドのDoDと三層構造を、コード定義とDynamoDB公開の2経路に分けて図解。sample-agentはガイド上のチュートリアル例で、実リポジトリにはコミットしない前提。
 
 [Sources]
-- repo:documents/エージェント追加手順ガイド.md（3.1〜3.7の7 Step。1.1「完全データ駆動。新規エージェントを追加してもこのファイルは変更不要」）
+- repo:documents/エージェント追加手順ガイド.md（0章DoD、1.1三層構造、3.1〜3.7のsample-agentチュートリアル）
 - repo:frontend/schemas/api/agents.ts（AGENT_IDS の実体はここ）
 -->
 

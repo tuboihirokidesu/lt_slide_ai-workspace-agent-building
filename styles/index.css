@@ -641,6 +641,211 @@ div.mermaid svg rect.note {
   line-height: 1.5;
 }
 
+.slidev-layout.agent-addition-slide h1 {
+  margin-bottom: 0.75rem;
+  font-size: 2.2rem;
+}
+
+.agent-addition-map {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 0.85fr);
+  gap: 1rem;
+}
+
+.agent-addition-lane {
+  min-width: 0;
+  padding: 0.7rem 0.8rem 0.75rem;
+  border: 1px solid var(--muji-border);
+  background: var(--muji-bg);
+}
+
+.agent-publish-lane {
+  background: var(--muji-kinari);
+  border-color: var(--muji-beige);
+}
+
+.agent-addition-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.42rem;
+  border-bottom: 1px solid var(--muji-text);
+}
+
+.agent-addition-head strong {
+  color: var(--muji-red);
+  font-size: 0.92rem;
+}
+
+.agent-addition-head span {
+  color: var(--muji-text-secondary);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.agent-code-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.agent-code-card {
+  min-width: 0;
+  padding: 0.5rem 0.55rem 0.45rem;
+  border: 1px solid var(--muji-border-light);
+  background: var(--muji-bg);
+}
+
+.agent-code-label {
+  min-height: 1.55rem;
+  color: var(--muji-red);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.agent-code-label span {
+  display: block;
+  overflow: hidden;
+  color: var(--muji-text-secondary);
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.54rem;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slidev-layout pre.agent-mini-code {
+  height: 5.1rem;
+  margin: 0.35rem 0 !important;
+  padding: 0.48rem 0.52rem !important;
+  overflow: hidden;
+  border-color: var(--muji-border-light) !important;
+  background: var(--muji-bg-secondary) !important;
+  font-size: 0.61rem !important;
+  line-height: 1.42 !important;
+  white-space: pre-wrap;
+}
+
+.agent-code-meaning {
+  color: var(--muji-text-secondary);
+  font-size: 0.64rem;
+  line-height: 1.35;
+}
+
+.agent-flow-arrow {
+  height: 1.45rem;
+  color: var(--muji-text-secondary);
+  font-size: 0.62rem;
+  line-height: 1.45rem;
+  text-align: center;
+}
+
+.agent-flow-arrow span {
+  color: var(--muji-red);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.agent-common-route,
+.agent-menu-result {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0.48rem 0.65rem;
+  background: var(--muji-text);
+  color: #fff;
+}
+
+.agent-common-route strong,
+.agent-menu-result strong {
+  color: #fff;
+  font-size: 0.79rem;
+}
+
+.agent-common-route span {
+  padding: 0.08rem 0.3rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #fff;
+  font-size: 0.56rem;
+  font-weight: 700;
+}
+
+.agent-common-route small,
+.agent-menu-result small {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.58rem;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.agent-flow-result {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.55rem;
+  padding-top: 0.48rem;
+  font-size: 0.74rem;
+}
+
+.agent-flow-result span {
+  color: var(--muji-red);
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.agent-seed-card {
+  border-color: var(--muji-beige);
+}
+
+.agent-publish-lane .agent-mini-code {
+  height: 5.1rem;
+}
+
+.agent-menu-result {
+  display: flex;
+  min-height: 3.25rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.08rem;
+}
+
+.agent-menu-result small {
+  text-align: left;
+}
+
+.agent-done-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.7rem;
+  padding: 0.48rem 0.75rem;
+  border-left: 4px solid var(--muji-red);
+  background: var(--muji-bg-secondary);
+  font-size: 0.72rem;
+}
+
+.agent-done-row > span {
+  color: var(--muji-red);
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.agent-done-row i {
+  color: var(--muji-disabled);
+  font-style: normal;
+}
+
+.agent-done-row small {
+  margin-left: auto;
+  color: var(--muji-text-secondary);
+  font-size: 0.58rem;
+}
+
 .muji-token {
   display: inline-block;
   margin: 0.12rem 0.2rem 0.12rem 0;
