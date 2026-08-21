@@ -37,7 +37,7 @@ layout: cover
 </div>
 
 <!--
-外部の開発者が、エージェントの構成要素と作り方、2方式の違いと選択基準を理解するための資料。発表時間30分・全18枚（約1.67分/枚）。
+外部の開発者が、エージェントの構成要素と作り方、2方式の違いと選択基準を理解するための資料。発表時間30分・全17枚（約1.75分/枚）。
 構成方針: 冒頭にループの実況 → 定義 → 作り方A（実物のレジストリエントリ）→ 作り方B → 選び方 → 参照実装の現在地（免責はここに集約）。
 
 -->
@@ -284,80 +284,6 @@ class: agent-registry-slide
 - repo:documents/エージェント追加手順ガイド.md（3.3 Step 3のエントリ本体をそのまま掲載。4章にツール接続の3パターン）
 - repo:frontend/app/api/chat/histories/[historyId]/agent/agentRegistry.ts
 - repo:terraform/modules/agentcore/aiws_dynamodb_gateway/main.tf（aws_bedrockagentcore_gateway + Lambda target + tool_schema）
--->
-
----
-layout: default
-class: kintone-tools-slide
----
-
-<div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">作り方A · Kintone toolの実例</div>
-  <div><span class="muji-token">観点: ツール・安全と運用</span></div>
-</div>
-
-# 「休日申請を登録して」がKintoneに届くまで
-
-<div class="kintone-example-request"><span>利用者</span><strong>「来週金曜日の休日申請を登録して」</strong></div>
-
-<div class="kintone-example-flow">
-  <div class="kintone-example-node">
-    <div class="kintone-example-index">01 · AI</div>
-    <strong>登録用toolを選ぶ</strong>
-    <code>holiday_add_records</code>
-  </div>
-  <div class="kintone-example-arrow"><span>選択</span><b>→</b></div>
-  <div class="kintone-example-node kintone-example-gateway">
-    <div class="kintone-example-index">02 · Gateway</div>
-    <strong>呼び出しを受け付ける</strong>
-    <code>tools/call</code>
-    <small>JWTと利用者の権限を確認</small>
-  </div>
-  <div class="kintone-example-arrow"><span>実行</span><b>→</b></div>
-  <div class="kintone-example-node">
-    <div class="kintone-example-index">03 · 共通Lambda</div>
-    <strong>休日申請の処理を実行</strong>
-    <code>executeTool(…)</code>
-    <small>入力を検証し、Kintone APIを呼ぶ</small>
-  </div>
-  <div class="kintone-example-arrow"><span>REST API</span><b>→</b></div>
-  <div class="kintone-example-node kintone-example-result">
-    <div class="kintone-example-index">04 · Kintone</div>
-    <strong>休日申請を登録</strong>
-    <small>新しいレコードが1件追加される</small>
-  </div>
-</div>
-
-<div class="kintone-example-build">
-  <div class="kintone-example-build-title">私たちが作ったもの</div>
-  <div><span>toolの入口</span><strong>Terraformで名前・説明・入力項目を定義</strong></div>
-  <div><span>実際の処理</span><strong>1つの共通LambdaにKintone操作を実装</strong></div>
-  <div class="kintone-example-count"><strong>5アプリ</strong><i>／</i><strong>18操作</strong></div>
-</div>
-
-<div class="kintone-example-conclusion"><strong>KintoneそのものがMCPなのではない。</strong><span>Kintone APIを呼ぶLambdaを、Gateway経由でMCP toolとしてAIに公開している。</span></div>
-
-<!--
-このスライドでは、Kintoneの機能をAIから使えるようにした例を紹介します。
-
-例えば利用者が「来週金曜日の休日申請を登録して」と依頼すると、AIは holiday_add_records というtoolを選びます。
-
-このtoolの名前や説明、入力項目はTerraformで定義しています。AIがtoolを呼ぶと、AgentCore GatewayがJWTを確認し、Interceptorが利用者の権限を確認します。
-
-その後、共通のLambdaがtool名を見て休日申請の処理を選び、入力を検証してKintone APIを呼びます。18個のLambdaがあるわけではなく、1つの共通Lambdaが18個の業務操作を振り分けています。
-
-つまり、KintoneそのものがMCPなのではありません。私たちがKintone APIを呼ぶ処理をLambdaで作り、それをAgentCore Gateway経由でMCP toolとしてAIへ公開しています。
-
-[Sources]
-- repo:terraform/modules/agentcore/kintone_gateway/main.tf（MCP Gateway、CUSTOM_JWT、Interceptor、18 tools / targets、共通Lambda）
-- repo:frontend/lib/mcp/gateways.config.ts（5つの論理キーが同じ MCP_GATEWAY_URL_KINTONE を参照）
-- repo:lambda/src/functions/kintone_mcp_interceptor.ts（tools/listフィルタ、tools/call privilege判定）
-- repo:lambda/src/functions/kintone_mcp_handler.ts（tool名解析、ownership適用、Kintone API実行）
-- repo:lambda/src/functions/kintone/config.ts（5アプリ、許可操作、必要privilege、休日申請のownership設定）
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-using.html（MCP tools/list / tools/call）
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-add-target-lambda.html（Lambda targetとtool schema）
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-using-mcp-list.html（tools/listとGateway組み込み検索tool）
-- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-interceptors-types.html（request / response Interceptor）
 -->
 
 ---
