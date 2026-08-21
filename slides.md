@@ -117,7 +117,7 @@ layout: default
 
 <div class="muji-eyebrow mb-3">設計の言語化</div>
 
-# SDKを選ぶ前に、6つの観点を言葉にする
+# エージェント化する前に、6つの観点を決める
 
 <div class="grid grid-cols-3 gap-x-8 gap-y-8 mt-8">
 
