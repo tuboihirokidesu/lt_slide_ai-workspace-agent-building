@@ -40,8 +40,6 @@ layout: cover
 外部の開発者が、エージェントの構成要素と作り方、2方式の違いと選択基準を理解するための資料。発表時間30分・全17枚（約1.75分/枚）。
 構成方針: 冒頭にループの実況 → 定義 → 作り方A（実物のレジストリエントリ）→ 作り方B → 選び方 → 参照実装の現在地（免責はここに集約）。
 
-[Sources]
-- 参照実装リポジトリ 対象commit: develop@e33b41bea233d00e4c6b92da024e12cc412abcf5（2026-08-07）。以降のノートで repo: と書いたパスはこのcommitを指す
 -->
 
 ---
@@ -644,22 +642,9 @@ layout: default
 
 <div class="muji-eyebrow mb-3">参考資料</div>
 
-# 参考資料
+# 公式ドキュメント
 
-<div class="grid grid-cols-2 gap-10 mt-6">
-
-<div>
-  <div class="muji-label mb-2">調査対象（参照実装リポジトリ内）</div>
-  <ul class="muji-source-list">
-    <li>対象commit: <code>develop@e33b41bea233d00e4c6b92da024e12cc412abcf5</code></li>
-    <li>documents/エージェント追加手順ガイド.md</li>
-    <li>runtime/general-agent/README.md（Runtime仕様）</li>
-    <li>runtime/shared/chat/auth.py（session IDの信頼境界）</li>
-  </ul>
-</div>
-
-<div>
-  <div class="muji-label mb-2">公式ドキュメント</div>
+<div class="mt-6 max-w-[54rem]">
   <ul class="muji-source-list">
     <li><a href="https://ai-sdk.dev/docs/agents/overview">AI SDK · Agents / Structured Workflows</a></li>
     <li><a href="https://ai-sdk.dev/docs/agents/workflow-agent">AI SDK · ToolLoopAgent / WorkflowAgent</a></li>
@@ -670,12 +655,7 @@ layout: default
   </ul>
 </div>
 
-</div>
-
-<div class="muji-panel-kinari mt-7"><div class="muji-small">公式docs再確認: 2026-08-13 · 実装の記述はすべて対象commit時点</div></div>
-
 <!--
 [Sources]
-- 参照実装リポジトリ 対象commit: develop@e33b41bea233d00e4c6b92da024e12cc412abcf5
 - 上記スライド記載の公式ドキュメント各URL
 -->
