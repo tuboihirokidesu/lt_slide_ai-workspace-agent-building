@@ -865,210 +865,182 @@ div.mermaid svg rect.note {
 }
 
 .slidev-layout.kintone-tools-slide h1 {
-  margin-bottom: 0.75rem;
-  font-size: 2.12rem;
+  margin-bottom: 0.7rem;
+  font-size: 2.15rem;
 }
 
-.kintone-tool-flow {
+.kintone-example-request {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--muji-red);
+  background: var(--muji-kinari);
+}
+
+.kintone-example-request span {
+  color: var(--muji-red);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.kintone-example-request strong {
+  font-size: 1.15rem;
+}
+
+.kintone-example-flow {
   display: grid;
-  grid-template-columns: 1.05fr 0.46fr 1.12fr 0.42fr 1.12fr 0.34fr 0.82fr;
+  grid-template-columns: 1fr 0.28fr 1.05fr 0.28fr 1.18fr 0.3fr 0.9fr;
   align-items: stretch;
-  gap: 0.45rem;
+  gap: 0.55rem;
 }
 
-.kintone-tool-node {
+.kintone-example-node {
   display: flex;
   min-width: 0;
-  min-height: 7rem;
+  min-height: 8.1rem;
   flex-direction: column;
   justify-content: center;
-  padding: 0.72rem 0.8rem;
+  padding: 0.9rem 0.85rem;
   border-top: 2px solid var(--muji-text);
-  border-bottom: 1px solid var(--muji-border-light);
+  background: var(--muji-bg);
 }
 
-.kintone-tool-entry {
-  background: var(--muji-bg-secondary);
-}
-
-.kintone-tool-gateway {
+.kintone-example-gateway {
   border-top-color: var(--muji-red);
   background: var(--muji-kinari);
 }
 
-.kintone-tool-destination {
+.kintone-example-result {
   background: var(--muji-bg-secondary);
 }
 
-.kintone-tool-step {
-  margin-bottom: 0.45rem;
+.kintone-example-index {
+  margin-bottom: 0.55rem;
   color: var(--muji-red);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
-.kintone-tool-node strong {
-  font-size: 0.82rem;
-  line-height: 1.42;
+.kintone-example-node strong {
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
-.kintone-tool-node code {
+.kintone-example-node code {
   align-self: flex-start;
-  font-size: 0.64rem !important;
+  margin-top: 0.5rem;
+  font-size: 0.68rem !important;
   white-space: nowrap;
 }
 
-.kintone-tool-node small code {
-  padding: 0;
-  border: 0;
-  background: transparent !important;
-  color: var(--muji-text-secondary) !important;
-  font-size: inherit !important;
-}
-
-.kintone-tool-node small {
+.kintone-example-node small {
   display: block;
-  margin-top: 0.4rem;
+  margin-top: 0.48rem;
   color: var(--muji-text-secondary);
-  font-size: 0.65rem;
-  line-height: 1.42;
+  font-size: 0.7rem;
+  line-height: 1.45;
 }
 
-.kintone-tool-node small + small {
-  margin-top: 0.16rem;
-}
-
-.kintone-tool-node small b {
-  color: var(--muji-text);
-  font-weight: 700;
-}
-
-.kintone-tool-arrow {
+.kintone-example-arrow {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.12rem;
+  gap: 0.2rem;
   color: var(--muji-red);
   font-weight: 700;
   text-align: center;
 }
 
-.kintone-tool-arrow span {
-  display: block;
+.kintone-example-arrow span {
   color: var(--muji-text-secondary);
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   font-weight: 500;
-  line-height: 1.32;
+  line-height: 1.3;
 }
 
-.kintone-tool-arrow b {
+.kintone-example-arrow b {
   color: var(--muji-red);
-  font-size: 1rem;
+  font-size: 1.15rem;
   line-height: 1;
 }
 
-.kintone-tool-catalog {
+.kintone-example-build {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr 1.2fr 1fr;
-  margin-top: 1rem;
+  grid-template-columns: 0.8fr 1.35fr 1.45fr 0.72fr;
+  align-items: stretch;
+  margin-top: 1.05rem;
   border-top: 1px solid var(--muji-text);
   border-bottom: 1px solid var(--muji-border-light);
 }
 
-.kintone-tool-catalog > div {
-  min-width: 0;
-  padding: 0.62rem 0.65rem 0.66rem;
+.kintone-example-build > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 4.25rem;
+  padding: 0.62rem 0.75rem;
   border-left: 1px solid var(--muji-border-light);
 }
 
-.kintone-tool-catalog > div:first-child {
+.kintone-example-build > div:first-child {
   border-left: 0;
 }
 
-.kintone-tool-catalog strong,
-.kintone-tool-catalog span {
-  display: block;
-}
-
-.kintone-tool-catalog strong {
-  font-size: 0.75rem;
-  line-height: 1.3;
-}
-
-.kintone-tool-catalog strong b {
-  margin-left: 0.2rem;
+.kintone-example-build-title {
   color: var(--muji-red);
-  font-size: 0.64rem;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
-.kintone-tool-catalog span {
-  margin-top: 0.25rem;
+.kintone-example-build span {
+  margin-bottom: 0.25rem;
   color: var(--muji-text-secondary);
-  font-size: 0.64rem;
-  line-height: 1.38;
+  font-size: 0.65rem;
+  font-weight: 700;
 }
 
-.kintone-tool-foot {
-  display: block;
-  margin-top: 0.75rem;
-}
-
-.kintone-tool-definition {
-  display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  padding-left: 0.85rem;
-  border-left: 4px solid var(--muji-red);
+.kintone-example-build strong {
   font-size: 0.72rem;
-  white-space: nowrap;
+  line-height: 1.4;
 }
 
-.kintone-tool-definition strong {
+.kintone-example-count {
+  flex-direction: row !important;
+  align-items: baseline;
+  gap: 0.35rem;
+  background: var(--muji-bg-secondary);
+}
+
+.kintone-example-count strong {
   color: var(--muji-red);
+  font-size: 0.82rem;
 }
 
-.kintone-tool-definition span {
-  color: var(--muji-text-secondary);
-}
-
-.kintone-tool-definition i {
+.kintone-example-count i {
   color: var(--muji-disabled);
   font-style: normal;
 }
 
-.kintone-tool-safety {
+.kintone-example-conclusion {
   display: flex;
   align-items: baseline;
-  gap: 0.45rem;
-  margin-top: 0.5rem;
-  padding-left: 0.85rem;
-  border-left: 4px solid var(--muji-border);
+  gap: 0.65rem;
+  margin-top: 0.8rem;
+  padding-left: 0.9rem;
+  border-left: 4px solid var(--muji-red);
+}
+
+.kintone-example-conclusion strong {
+  font-size: 0.86rem;
+}
+
+.kintone-example-conclusion span {
   color: var(--muji-text-secondary);
-  font-size: 0.64rem;
-  white-space: nowrap;
-}
-
-.kintone-tool-safety strong {
-  color: var(--muji-red);
-  font-size: 0.67rem;
-}
-
-.kintone-tool-safety span {
-  padding-left: 0.45rem;
-  border-left: 1px solid var(--muji-border);
-}
-
-.kintone-tool-note {
-  margin-top: 0.55rem;
-  padding: 0.38rem 0.55rem;
-  background: var(--muji-bg-secondary);
-  color: var(--muji-text-secondary);
-  font-size: 0.67rem;
-  font-weight: 600;
-  line-height: 1.35;
-  text-align: center;
+  font-size: 0.73rem;
 }
 
 .muji-token {

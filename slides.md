@@ -292,58 +292,61 @@ class: kintone-tools-slide
 ---
 
 <div class="flex items-center justify-between mb-3">
-  <div class="muji-eyebrow">作り方A · Kintone tools</div>
+  <div class="muji-eyebrow">作り方A · Kintone toolの実例</div>
   <div><span class="muji-token">観点: ツール・安全と運用</span></div>
 </div>
 
-# Kintone操作をLambdaで実装し、MCPで公開する
+# 「休日申請を登録して」がKintoneに届くまで
 
-<div class="kintone-tool-flow">
-  <div class="kintone-tool-node kintone-tool-entry">
-    <div class="kintone-tool-step">Webアプリ · MCP Client</div>
-    <code>["kr-dashboard"]</code>
-    <small><code>gateways</code>のKintone系5キーは同じGateway URL。KintoneのURL / API tokenはHandlerがSecrets Managerから取得</small>
+<div class="kintone-example-request"><span>利用者</span><strong>「来週金曜日の休日申請を登録して」</strong></div>
+
+<div class="kintone-example-flow">
+  <div class="kintone-example-node">
+    <div class="kintone-example-index">01 · AI</div>
+    <strong>登録用toolを選ぶ</strong>
+    <code>holiday_add_records</code>
   </div>
-  <div class="kintone-tool-arrow"><span>tools/list<br>tools/call</span><b>→</b></div>
-  <div class="kintone-tool-node kintone-tool-gateway">
-    <div class="kintone-tool-step">AgentCore MCP Gateway</div>
-    <strong>18業務tool Targets</strong>
-    <code>for_each = local.tools</code>
-    <small>tool名 · 説明 · input schemaを定義</small>
-    <small><b>Gateway</b>: JWT認証 ／ <b>Interceptor</b>: privilege制御</small>
+  <div class="kintone-example-arrow"><span>選択</span><b>→</b></div>
+  <div class="kintone-example-node kintone-example-gateway">
+    <div class="kintone-example-index">02 · Gateway</div>
+    <strong>呼び出しを受け付ける</strong>
+    <code>tools/call</code>
+    <small>JWTと利用者の権限を確認</small>
   </div>
-  <div class="kintone-tool-arrow"><span>tool名＋引数</span><b>→</b></div>
-  <div class="kintone-tool-node">
-    <div class="kintone-tool-step">共通 Handler Lambda</div>
-    <strong>tool名 → app / operation</strong>
-    <code>executeTool(name, …)</code>
-    <small>入力検証 · 休日申請の本人／承認者チェック</small>
+  <div class="kintone-example-arrow"><span>実行</span><b>→</b></div>
+  <div class="kintone-example-node">
+    <div class="kintone-example-index">03 · 共通Lambda</div>
+    <strong>休日申請の処理を実行</strong>
+    <code>executeTool(…)</code>
+    <small>入力を検証し、Kintone APIを呼ぶ</small>
   </div>
-  <div class="kintone-tool-arrow"><span>REST API</span><b>→</b></div>
-  <div class="kintone-tool-node kintone-tool-destination">
-    <div class="kintone-tool-step">Kintone</div>
-    <strong>5アプリ</strong>
-    <small>レコードの取得 · 追加 · 更新 · 削除／フォーム情報取得</small>
+  <div class="kintone-example-arrow"><span>REST API</span><b>→</b></div>
+  <div class="kintone-example-node kintone-example-result">
+    <div class="kintone-example-index">04 · Kintone</div>
+    <strong>休日申請を登録</strong>
+    <small>新しいレコードが1件追加される</small>
   </div>
 </div>
 
-<div class="kintone-tool-catalog">
-  <div><strong>ナレッジ回答 <b>2</b></strong><span>取得 · フィールド</span></div>
-  <div><strong>問合せ管理 <b>3</b></strong><span>取得 · 更新 · フィールド</span></div>
-  <div><strong>休日申請 <b>6</b></strong><span>取得 · 追加 · 更新 · 承認／差戻し · 削除 · フィールド</span></div>
-  <div><strong>KRダッシュボード <b>5</b></strong><span>取得 · 追加 · 更新 · 削除 · フィールド</span></div>
-  <div><strong>社員マスター <b>2</b></strong><span>取得 · フィールド</span></div>
+<div class="kintone-example-build">
+  <div class="kintone-example-build-title">私たちが作ったもの</div>
+  <div><span>toolの入口</span><strong>Terraformで名前・説明・入力項目を定義</strong></div>
+  <div><span>実際の処理</span><strong>1つの共通LambdaにKintone操作を実装</strong></div>
+  <div class="kintone-example-count"><strong>5アプリ</strong><i>／</i><strong>18操作</strong></div>
 </div>
 
-<div class="kintone-tool-foot">
-  <div class="kintone-tool-definition"><strong>tool</strong><span>業務操作の単位</span><i>／</i><strong>MCP</strong><span>一覧取得・呼び出しの共通インターフェース</span></div>
-  <div class="kintone-tool-safety"><strong>安全の境界</strong><span>Route: HITL</span><span>Gateway: JWT</span><span>Interceptor: privilege</span><span>Handler: 休日申請の所有権</span></div>
-</div>
-
-<div class="kintone-tool-note">接続キーはtoolの隔離境界ではない。tools/listは利用者のprivilegeに応じたsubsetを返す。</div>
+<div class="kintone-example-conclusion"><strong>KintoneそのものがMCPなのではない。</strong><span>Kintone APIを呼ぶLambdaを、Gateway経由でMCP toolとしてAIに公開している。</span></div>
 
 <!--
-5つのgatewayキー（knowledge-answer / holiday-request / employee / inquiry-answer / kr-dashboard）は別々のMCPサーバーではなく、同じ MCP_GATEWAY_URL_KINTONE を参照する論理名。AgentCore Gatewayに18個のKintone業務tool Targetを登録し、全Targetが同じhandler Lambdaを呼ぶ。18件すべてが常に利用者へ見えるわけではなく、tools/listはprivilegeで絞られ、Gateway組み込みtoolが含まれる場合もある。InterceptorはGatewayが署名検証したJWTからユーザーを特定し、tools/listのフィルタとtools/callのprivilege判定を行う。Handler側ではtool名を解析し、入力検証、休日申請のownership制御、Kintone REST API実行を行う。
+このスライドでは、Kintoneの機能をAIから使えるようにした例を紹介します。
+
+例えば利用者が「来週金曜日の休日申請を登録して」と依頼すると、AIは holiday_add_records というtoolを選びます。
+
+このtoolの名前や説明、入力項目はTerraformで定義しています。AIがtoolを呼ぶと、AgentCore GatewayがJWTを確認し、Interceptorが利用者の権限を確認します。
+
+その後、共通のLambdaがtool名を見て休日申請の処理を選び、入力を検証してKintone APIを呼びます。18個のLambdaがあるわけではなく、1つの共通Lambdaが18個の業務操作を振り分けています。
+
+つまり、KintoneそのものがMCPなのではありません。私たちがKintone APIを呼ぶ処理をLambdaで作り、それをAgentCore Gateway経由でMCP toolとしてAIへ公開しています。
 
 [Sources]
 - repo:terraform/modules/agentcore/kintone_gateway/main.tf（MCP Gateway、CUSTOM_JWT、Interceptor、18 tools / targets、共通Lambda）
