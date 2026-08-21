@@ -212,6 +212,11 @@ body,
   font-family: inherit !important;
 }
 
+/* Shiki's default light-theme comment token is too faint on our code surface. */
+.slidev-layout .shiki span[style*="#A0ADA0"] {
+  color: #59655a !important;
+}
+
 .slidev-layout .shiki .line.highlighted {
   display: inline-block;
   width: calc(100% + 1rem);

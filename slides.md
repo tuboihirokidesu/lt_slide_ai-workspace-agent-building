@@ -254,8 +254,8 @@ layout: default
     createSampleAgentSystemPromptParts(
       ctx.company, withPromptOptions(ctx)),
   catalog: "visualization",
-  gateways: [],
-  safeToolPatterns: [],
+  gateways: [], // MCP接続キー。例: ["kr-dashboard"]
+  safeToolPatterns: [], // HITL免除。例: ["rag_retrieve"]
   hasReferences: false,
   telemetryAgentName: "sample_agent",
   titleTelemetryTag: "sample_agent_title_generation",
@@ -268,8 +268,8 @@ layout: default
 
 <div>
   <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">buildSystemPromptParts</div><div class="muji-small">指示。static / dynamic 分離 — static はキャッシュされるため変動値禁止</div></div>
-  <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">gateways / buildRuntimeTools</div><div class="muji-small">ツール。接続は3パターン — ローカルTS注入 / 既存MCP Gateway / 新規Gateway。Gatewayの実体はAgentCore Gateway: 自作LambdaのMCPツール化で、接続実装とIAMはLambda側</div></div>
-  <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">safeToolPatterns</div><div class="muji-small">承認を免除するtool名。既定は破壊的キーワードで自動判定</div></div>
+  <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">gateways / buildRuntimeTools</div><div class="muji-small">gateways は接続するMCP Gatewayのキー一覧。キーから別設定のURL環境変数を引き、toolsを取得する。buildRuntimeTools はローカルTS tool等の注入点</div></div>
+  <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">safeToolPatterns</div><div class="muji-small">HITL承認を免除するtool名の部分一致パターン。空なら update / delete / create 等をtool名から自動判定</div></div>
   <div class="border-t border-[#3c3c43] py-3"><div class="font-bold">telemetryAgentName</div><div class="muji-small">観測。Langfuseタグの元になる</div></div>
 </div>
 
