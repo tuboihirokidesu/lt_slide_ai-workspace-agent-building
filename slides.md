@@ -37,7 +37,7 @@ layout: cover
 </div>
 
 <!--
-外部の開発者が、エージェントの構成要素と作り方、2方式の違いと選択基準を理解するための資料。発表時間30分・全17枚（約1.75分/枚）。
+外部の開発者が、エージェントの構成要素と作り方、2方式の違いと選択基準を理解するための資料。発表時間30分・全18枚（約1.67分/枚）。
 構成方針: 冒頭にループの実況 → 定義 → 作り方A（実物のレジストリエントリ）→ 作り方B → 選び方 → 参照実装の現在地（免責はここに集約）。
 
 -->
@@ -235,6 +235,7 @@ tools: { sample_echo: … }</code></pre>
 
 ---
 layout: default
+class: agent-registry-slide
 ---
 
 <div class="flex items-center justify-between mb-3">
@@ -273,16 +274,87 @@ layout: default
 
 </div>
 
-<div class="muji-callout mt-4"><strong>宣言を1個書けば、専門エージェントが1体増える。</strong><span class="muji-small ml-2">最小の実例: kr-dashboard-agent（単一gateway・フォーム系）。</span></div>
+<div class="muji-callout mt-0"><strong>既存toolを使うエージェントは、この宣言で追加できる。</strong><span class="muji-small ml-2">例: kr-dashboard-agent（Kintone接続キー1つ）。</span></div>
 
 <!--
-「作れそう」を作る中心スライド。これはガイドのチュートリアル（sample-agent）に掲載されている実エントリで、創作ではない。最小の実例は kr-dashboard-agent（単一gateway・フォーム系）。新しい能力を作る前に、既存のtoolとSkillを探すのが原則。
+「作れそう」を作る中心スライド。これはガイドのチュートリアル（sample-agent）に掲載されている実エントリで、創作ではない。最小の実例は kr-dashboard-agent（Kintone接続キー1つ・フォーム系）。新しい能力を作る前に、既存のtoolとSkillを探すのが原則。
 想定質問「AgentCoreがS3やDynamoのツールを提供する？」への答え: 提供するのはGatewayによる「ツール化と配布」。既製コネクタではなく、実装（boto3等）とIAMは自作Lambda側。AgentCore自身の組み込みツールはCode InterpreterとBrowserの2つのみ。Runtimeはツール提供者ではなく実行環境。
 
 [Sources]
 - repo:documents/エージェント追加手順ガイド.md（3.3 Step 3のエントリ本体をそのまま掲載。4章にツール接続の3パターン）
 - repo:frontend/app/api/chat/histories/[historyId]/agent/agentRegistry.ts
 - repo:terraform/modules/agentcore/aiws_dynamodb_gateway/main.tf（aws_bedrockagentcore_gateway + Lambda target + tool_schema）
+-->
+
+---
+layout: default
+class: kintone-tools-slide
+---
+
+<div class="flex items-center justify-between mb-3">
+  <div class="muji-eyebrow">作り方A · Kintone tools</div>
+  <div><span class="muji-token">観点: ツール・安全と運用</span></div>
+</div>
+
+# Kintone操作をLambdaで実装し、MCPで公開する
+
+<div class="kintone-tool-flow">
+  <div class="kintone-tool-node kintone-tool-entry">
+    <div class="kintone-tool-step">Webアプリ · MCP Client</div>
+    <code>["kr-dashboard"]</code>
+    <small><code>gateways</code>のKintone系5キーは同じGateway URL。KintoneのURL / API tokenはHandlerがSecrets Managerから取得</small>
+  </div>
+  <div class="kintone-tool-arrow"><span>tools/list<br>tools/call</span><b>→</b></div>
+  <div class="kintone-tool-node kintone-tool-gateway">
+    <div class="kintone-tool-step">AgentCore MCP Gateway</div>
+    <strong>18業務tool Targets</strong>
+    <code>for_each = local.tools</code>
+    <small>tool名 · 説明 · input schemaを定義</small>
+    <small><b>Gateway</b>: JWT認証 ／ <b>Interceptor</b>: privilege制御</small>
+  </div>
+  <div class="kintone-tool-arrow"><span>tool名＋引数</span><b>→</b></div>
+  <div class="kintone-tool-node">
+    <div class="kintone-tool-step">共通 Handler Lambda</div>
+    <strong>tool名 → app / operation</strong>
+    <code>executeTool(name, …)</code>
+    <small>入力検証 · 休日申請の本人／承認者チェック</small>
+  </div>
+  <div class="kintone-tool-arrow"><span>REST API</span><b>→</b></div>
+  <div class="kintone-tool-node kintone-tool-destination">
+    <div class="kintone-tool-step">Kintone</div>
+    <strong>5アプリ</strong>
+    <small>レコードの取得 · 追加 · 更新 · 削除／フォーム情報取得</small>
+  </div>
+</div>
+
+<div class="kintone-tool-catalog">
+  <div><strong>ナレッジ回答 <b>2</b></strong><span>取得 · フィールド</span></div>
+  <div><strong>問合せ管理 <b>3</b></strong><span>取得 · 更新 · フィールド</span></div>
+  <div><strong>休日申請 <b>6</b></strong><span>取得 · 追加 · 更新 · 承認／差戻し · 削除 · フィールド</span></div>
+  <div><strong>KRダッシュボード <b>5</b></strong><span>取得 · 追加 · 更新 · 削除 · フィールド</span></div>
+  <div><strong>社員マスター <b>2</b></strong><span>取得 · フィールド</span></div>
+</div>
+
+<div class="kintone-tool-foot">
+  <div class="kintone-tool-definition"><strong>tool</strong><span>業務操作の単位</span><i>／</i><strong>MCP</strong><span>一覧取得・呼び出しの共通インターフェース</span></div>
+  <div class="kintone-tool-safety"><strong>安全の境界</strong><span>Route: HITL</span><span>Gateway: JWT</span><span>Interceptor: privilege</span><span>Handler: 休日申請の所有権</span></div>
+</div>
+
+<div class="kintone-tool-note">接続キーはtoolの隔離境界ではない。tools/listは利用者のprivilegeに応じたsubsetを返す。</div>
+
+<!--
+5つのgatewayキー（knowledge-answer / holiday-request / employee / inquiry-answer / kr-dashboard）は別々のMCPサーバーではなく、同じ MCP_GATEWAY_URL_KINTONE を参照する論理名。AgentCore Gatewayに18個のKintone業務tool Targetを登録し、全Targetが同じhandler Lambdaを呼ぶ。18件すべてが常に利用者へ見えるわけではなく、tools/listはprivilegeで絞られ、Gateway組み込みtoolが含まれる場合もある。InterceptorはGatewayが署名検証したJWTからユーザーを特定し、tools/listのフィルタとtools/callのprivilege判定を行う。Handler側ではtool名を解析し、入力検証、休日申請のownership制御、Kintone REST API実行を行う。
+
+[Sources]
+- repo:terraform/modules/agentcore/kintone_gateway/main.tf（MCP Gateway、CUSTOM_JWT、Interceptor、18 tools / targets、共通Lambda）
+- repo:frontend/lib/mcp/gateways.config.ts（5つの論理キーが同じ MCP_GATEWAY_URL_KINTONE を参照）
+- repo:lambda/src/functions/kintone_mcp_interceptor.ts（tools/listフィルタ、tools/call privilege判定）
+- repo:lambda/src/functions/kintone_mcp_handler.ts（tool名解析、ownership適用、Kintone API実行）
+- repo:lambda/src/functions/kintone/config.ts（5アプリ、許可操作、必要privilege、休日申請のownership設定）
+- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-using.html（MCP tools/list / tools/call）
+- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-add-target-lambda.html（Lambda targetとtool schema）
+- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-using-mcp-list.html（tools/listとGateway組み込み検索tool）
+- https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-interceptors-types.html（request / response Interceptor）
 -->
 
 ---
