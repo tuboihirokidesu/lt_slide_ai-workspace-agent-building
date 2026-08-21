@@ -151,7 +151,7 @@ class: diagram-slide
 # 同じチャット画面でも、送信後の経路が違う
 
 <div class="muji-diagram-frame">
-  <img src="./images/architecture-responsibility-boundaries.png" alt="同じチャット画面から、Webアプリ中心と実行環境中心の2方式へ分岐する責任境界図">
+  <img src="./images/architecture-responsibility-boundaries.png" alt="同じチャット画面から、Webアプリ中心と、サンドボックス内の作業ディレクトリを持つ実行環境中心の2方式へ分岐する責任境界図">
 </div>
 
 <!--
@@ -354,8 +354,6 @@ class: compact-matrix
 | ツール | `rag_retrieve`（読み取りのみ。破壊的キーワード非該当で承認不要） |
 | ループ | 共通Routeの ToolLoopAgent。上限10 step、足りなければ再検索 |
 | 安全と運用 | 公開範囲はDBの privilege。実行はLangfuseで観測 |
-
-<div class="muji-callout mt-5"><strong>6観点が言葉になっていれば、方式（A/B）は後から替えられる。</strong></div>
 
 <!--
 6観点の伏線回収。冒頭の模式トレース（再検索が1回入る）は、この表の宣言だけで成立する — 手順は書いていない。
@@ -620,15 +618,15 @@ class: closing-slide
 
 <div class="muji-kicker mb-7">まとめ</div>
 
-# エージェントは<br>必要な仕事だけに使う
+# エージェント作りは、<br>任せる範囲と実行場所を選ぶ
 
 <div class="grid grid-cols-3 gap-6 mt-10 max-w-[59rem]">
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">1</div><div class="font-bold mt-2">経路を定義できるなら明示ワークフロー</div></div>
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">2</div><div class="font-bold mt-2">次の一手を任せるなら、境界を書いたagent loop</div></div>
-  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">3</div><div class="font-bold mt-2">共通Routeに足すか、実行環境ごと作るか</div></div>
+  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">1</div><div class="font-bold mt-2">次の一手を固定できるかで、方式を選ぶ</div></div>
+  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">2</div><div class="font-bold mt-2">役割・tools・停止・承認で、任せる範囲を決める</div></div>
+  <div class="border-t border-[#3c3c43] pt-4"><div class="muji-number">3</div><div class="font-bold mt-2">共通Routeか専用Runtimeかを、能力と運用で選ぶ</div></div>
 </div>
 
-<div class="muji-meta mt-10">ループが2周回る様子を見せられれば、エージェントは説明できる</div>
+<div class="muji-meta mt-10">実装方式が違っても、決める6観点は同じ</div>
 
 <!--
 [Sources]
